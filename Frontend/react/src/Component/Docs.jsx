@@ -30,7 +30,7 @@ const Docs = () => {
     { title: "DSA", pdfSrc: DSA },
     { title: "JavaScript", pdfSrc: JavaScript },
     { title: "Artificial Intelligence", pdfSrc: AI },
-    { title: "General Knowledge", pdfSrc: Evs }
+    { title: "General Knowledge", pdfSrc: Evs },
   ];
 
   useEffect(() => {
@@ -42,7 +42,7 @@ const Docs = () => {
 
       try {
         const response = await axios.get("https://education-1-9tut.onrender.com/api/pay/payment-status", {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { "x-auth-token": token } // Sending token in x-auth-token header
         });
 
         setIsPaymentDone(response.data.isPaid);
@@ -68,7 +68,7 @@ const Docs = () => {
       }
 
       const options = {
-        key: "rzp_test_5fOFzd2Txaz6fT",
+        key: "rzp_test_5fOFzd2Txaz6fT", // Razorpay Key ID
         amount: data.amount,
         currency: data.currency,
         name: "Smart Learning",
@@ -78,8 +78,8 @@ const Docs = () => {
           alert("Payment successful: " + response.razorpay_payment_id);
           setIsPaymentDone(true);
 
-          await axios.post("https://education-1mov.onrender.com/api/user/update-payment", {}, {
-            headers: { Authorization: `Bearer ${token}` }
+          await axios.post("https://education-1-9tut.onrender.com/api/user/update-payment", {}, {
+            headers: { "x-auth-token": token } // Updating payment status after successful payment
           });
         },
         theme: { color: "#3399cc" },

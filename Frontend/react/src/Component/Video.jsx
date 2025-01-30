@@ -24,6 +24,7 @@ import Javascript from '../Video/JavaScript.mp4';
 import AI from '../Video/AI.mp4';
 import Dsa from '../Video/DSA.mp4';
 import English from '../Video/English.mp4';
+import gk from '../Video/English.mp4';
 
 gsap.registerPlugin(TextPlugin);
 

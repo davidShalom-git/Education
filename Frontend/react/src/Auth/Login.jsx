@@ -5,8 +5,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import College from '../assets/College.jpg';
 
 const SignIn = () => {
-  const [Email, SetEmail] = useState('');
-  const [Password, SetPassword] = useState('');
+  const [Email, setEmail] = useState('');
+  const [Password, setPassword] = useState('');
   const navigate = useNavigate();
 
   const url = 'https://education-1-9tut.onrender.com/api/auth/login';
@@ -33,7 +33,7 @@ const SignIn = () => {
         toast.success('Logged in successfully!');
         navigate('/home');
       } else {
-        toast.error('Invalid credentials');
+        toast.error(data.message || 'Invalid credentials');
       }
     } catch (error) {
       console.error('Error:', error);
@@ -67,13 +67,13 @@ const SignIn = () => {
               type="email"
               placeholder="Enter the email"
               className="px-20 py-4 rounded-full mb-5"
-              onChange={(e) => SetEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <input
               type="password"
               placeholder="Enter the password"
               className="px-20 py-4 rounded-full mb-5"
-              onChange={(e) => SetPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <button className="bg-black rounded-full w-40 py-4 text-white hover:bg-gray-800 transition duration-300 ease-in-out mx-auto">
               Login

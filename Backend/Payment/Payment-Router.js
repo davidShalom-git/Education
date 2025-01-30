@@ -5,21 +5,22 @@ const Auth = require('../Auth-Model/Auth');
 const authMiddleware = require("../Auth-Middle/Auth-Middle");
 
 const razorpay = new Razorpay({
-  key_id: "rzp_test_5fOFzd2Txaz6fT",
-  key_secret: "b6RT9foJESy1oHyrFBwKjfmW"
+  key_id: "rzp_test_5fOFzd2Txaz6fT", // Your Razorpay Key ID
+  key_secret: "b6RT9foJESy1oHyrFBwKjfmW", // Your Razorpay Secret Key
 });
 
+// Create Razorpay order
 router.post("/create-order", async (req, res) => {
   const { amount, currency } = req.body;
 
   try {
-    const amountInPaise = amount * 100;
+    const amountInPaise = amount * 100; // Amount in paise
 
     const options = {
       amount: amountInPaise,
       currency: currency,
       receipt: `receipt_${new Date().getTime()}`,
-      payment_capture: 1,
+      payment_capture: 1, // Automatic capture of payment
     };
 
     const order = await razorpay.orders.create(options);
@@ -36,9 +37,10 @@ router.post("/create-order", async (req, res) => {
   }
 });
 
+// Check payment status
 router.get("/payment-status", authMiddleware, async (req, res) => {
   try {
-    const user = await Auth.findById(req.user.userID);
+    const user = await Auth.findById(req.user.id);
     res.json({ isPaid: user?.hasPaidForPDF || false });
   } catch (error) {
     console.error("Error fetching payment status:", error);
@@ -46,12 +48,13 @@ router.get("/payment-status", authMiddleware, async (req, res) => {
   }
 });
 
+// Update payment status after successful payment
 router.post("/update-payment", authMiddleware, async (req, res) => {
   try {
-    const user = await Auth.findById(req.user.userID);
+    const user = await Auth.findById(req.user.id);
     if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
-    user.hasPaidForPDF = true;
+    user.hasPaidForPDF = true; // Mark user as paid
     await user.save();
 
     res.json({ success: true, message: "Payment recorded successfully" });

@@ -20,11 +20,8 @@ import Java from './Quiz/Java';
 import JavaScript from './Quiz/JavaScript';
 import DSA from './Quiz/DSA';
 import PrivateRoute from './Auth/Private';
-import { isAuthenticated } from './Auth/isAuth';
 
 function App() {
-  const { token } = isAuthenticated();
-
   return (
     <Router>
       <ToastContainer position="top-right" autoClose={3000} />
@@ -34,8 +31,10 @@ function App() {
         <Route path="/login" element={<SignIn />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/quiz" element={<Quiz />} />
-        <Route path="/docs" element={<Docs />} />
-        <Route path="/video" element={<Video />} />
+        <Route element={<PrivateRoute />}>
+          <Route path="/docs" element={<Docs />} />
+          <Route path="/video" element={<Video />} />
+        </Route>
         <Route path="/about" element={<About />} />
         <Route path="/physics" element={<Physics />} />
         <Route path="/chemistry" element={<Chemistry />} />
