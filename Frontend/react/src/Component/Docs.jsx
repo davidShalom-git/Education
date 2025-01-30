@@ -30,7 +30,7 @@ const Docs = () => {
     { title: "DSA", pdfSrc: DSA },
     { title: "JavaScript", pdfSrc: JavaScript },
     { title: "Artificial Intelligence", pdfSrc: AI },
-    { title: "General Knowledge", pdfSrc: Evs },
+    { title: "General Knowledge", pdfSrc: Evs }
   ];
 
   useEffect(() => {
