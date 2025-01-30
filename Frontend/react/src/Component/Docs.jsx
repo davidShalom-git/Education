@@ -1,3 +1,4 @@
+// Docs.js
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
@@ -18,6 +19,7 @@ const Docs = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPdf, setSelectedPdf] = useState(null);
   const [isPaymentDone, setIsPaymentDone] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
@@ -33,77 +35,124 @@ const Docs = () => {
     { title: "General Knowledge", pdfSrc: Evs },
   ];
 
+  // Check payment status on mount and after refresh
   useEffect(() => {
-    const fetchUserPaymentStatus = async () => {
+    const checkPaymentStatus = async () => {
       if (!token) {
         navigate("/login");
         return;
       }
 
       try {
-        const response = await axios.get("https://education-1-9tut.onrender.com/api/pay/payment-status", {
-          headers: { "x-auth-token": token } // Sending token in x-auth-token header
-        });
+        const response = await axios.get(
+          "https://education-1-9tut.onrender.com/api/pay/payment-status",
+          {
+            headers: { "x-auth-token": token }
+          }
+        );
 
         setIsPaymentDone(response.data.isPaid);
+        setLoading(false);
       } catch (error) {
         console.error("Error checking payment status:", error);
-        navigate("/login");
+        setLoading(false);
+        if (error.response?.status === 401) {
+          navigate("/login");
+        }
       }
     };
 
-    fetchUserPaymentStatus();
+    checkPaymentStatus();
   }, [token, navigate]);
 
   const handlePayment = async () => {
+    const token = localStorage.getItem("token");
+  
     try {
-      const { data } = await axios.post("https://education-1-9tut.onrender.com/api/pay/create-order", {
-        amount: 50, // INR
-        currency: "INR",
-      });
-
-      if (!data.success) {
+      // Create order
+      const orderResponse = await axios.post(
+        "https://education-1-9tut.onrender.com/api/pay/create-order",
+        {},
+        {
+          headers: { "x-auth-token": token }
+        }
+      );
+  
+      if (!orderResponse.data.success) {
         alert("Error creating order");
         return;
       }
-
+  
       const options = {
-        key: "rzp_test_5fOFzd2Txaz6fT", // Razorpay Key ID
-        amount: data.amount,
-        currency: data.currency,
+        key: "rzp_test_5fOFzd2Txaz6fT",
+        amount: orderResponse.data.amount,
+        currency: orderResponse.data.currency,
         name: "Smart Learning",
         description: "PDF Access Payment",
-        order_id: data.orderId,
+        order_id: orderResponse.data.orderId,
         handler: async function (response) {
-          alert("Payment successful: " + response.razorpay_payment_id);
-          setIsPaymentDone(true);
-
-          await axios.post("https://education-1-9tut.onrender.com/api/user/update-payment", {}, {
-            headers: { "x-auth-token": token } // Updating payment status after successful payment
-          });
+          try {
+            // Verify payment
+            const verifyResponse = await axios.post(
+              "https://education-1-9tut.onrender.com/api/pay/verify-payment",
+              {
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature
+              },
+              {
+                headers: { "x-auth-token": token }
+              }
+            );
+  
+            if (verifyResponse.data.success) {
+              setIsPaymentDone(true);
+              alert("Payment successful! You can now access all PDFs.");
+            } else {
+              alert("Payment verification failed. Please contact support.");
+            }
+          } catch (error) {
+            console.error("Payment verification error:", error);
+            alert("Payment verification failed. Please try again or contact support.");
+          }
         },
-        theme: { color: "#3399cc" },
+        prefill: {
+          name: "User",
+          email: "user@example.com"
+        },
+        theme: { color: "#3399cc" }
       };
-
+  
       const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (error) {
       console.error("Payment error:", error);
-      alert("Payment initiation failed.");
+      alert("Payment initiation failed. Please try again.");
     }
   };
+  
 
+  
   const handlePdfClick = (pdfSrc) => {
     if (!isPaymentDone) {
-      alert("Please complete the payment first!");
+      alert("Please complete the payment to access the PDFs!");
       handlePayment();
       return;
     }
     setSelectedPdf(pdfSrc);
   };
 
+  if (loading) {
+    return (
+      <div className="container mx-auto my-10 px-6 flex justify-center items-center">
+        <div className="text-xl">Loading...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto my-10 px-6">
+      {/* Navigation Bar */}
       <div className="container mx-auto px-6 py-5 flex flex-col md:flex-row justify-between items-center text-white rounded-[40px] bg-black mt-5">
         <img src={galaxy} alt="Galaxy Icon" className="h-10 w-10 animate-spin" />
         <ul className="flex space-x-6 text-lg">
@@ -116,24 +165,71 @@ const Docs = () => {
         <Logout />
       </div>
 
+      {/* Search Bar */}
       <div className="flex justify-center items-center mt-10 mb-10">
         <div className="relative">
-          <input type="text" placeholder="Enter the Topic.." className="shadow-xl px-16 py-4 rounded-[50px] w-full" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+          <input
+            type="text"
+            placeholder="Enter the Topic.."
+            className="shadow-xl px-16 py-4 rounded-[50px] w-full"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
           <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500" />
         </div>
       </div>
 
+      {/* Payment Status Message */}
+      {!isPaymentDone && (
+        <div className="text-center mb-8 bg-blue-50 p-6 rounded-lg">
+          <p className="text-lg mb-4">Complete the payment to access all PDFs</p>
+          <button
+            onClick={handlePayment}
+            className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            Make Payment (₹50 only)
+          </button>
+        </div>
+      )}
+
+      {/* PDF Grid or Viewer */}
       {!selectedPdf ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20 mt-20">
-          {topics.filter(topic => topic.title.toLowerCase().includes(searchQuery.toLowerCase())).map((topic, index) => (
-            <div key={index} className="shadow-lg p-6 rounded-[35px] bg-black text-white cursor-pointer" onClick={() => handlePdfClick(topic.pdfSrc)}>
-              <h1 className="text-center mt-6 text-lg md:text-xl">{topic.title}</h1>
-              <p className="text-center mt-2">Click to View PDF</p>
-            </div>
-          ))}
+          {topics
+            .filter(topic =>
+              topic.title.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+            .map((topic, index) => (
+              <div
+                key={index}
+                className={`shadow-lg p-6 rounded-[35px] ${
+                  isPaymentDone ? 'bg-black hover:bg-gray-800' : 'bg-gray-500'
+                } text-white cursor-pointer transition-colors`}
+                onClick={() => handlePdfClick(topic.pdfSrc)}
+              >
+                <h1 className="text-center mt-6 text-lg md:text-xl">
+                  {topic.title}
+                </h1>
+                <p className="text-center mt-2">
+                  {isPaymentDone ? 'Click to View PDF' : 'Payment Required'}
+                </p>
+              </div>
+            ))}
         </div>
       ) : (
-        <iframe src={selectedPdf} className="w-full h-screen rounded-[35px] shadow-lg bg-white"></iframe>
+        <div className="relative">
+          <button
+            onClick={() => setSelectedPdf(null)}
+            className="absolute top-4 left-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            Back to Topics
+          </button>
+          <iframe
+            src={selectedPdf}
+            className="w-full h-screen rounded-[35px] shadow-lg bg-white"
+            title="PDF Viewer"
+          />
+        </div>
       )}
     </div>
   );

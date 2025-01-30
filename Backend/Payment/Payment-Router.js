@@ -1,30 +1,26 @@
 const express = require("express");
 const Razorpay = require("razorpay");
+const crypto = require('crypto');
 const router = express.Router();
 const Auth = require('../Auth-Model/Auth');
 const authMiddleware = require("../Auth-Middle/Auth-Middle");
 
 const razorpay = new Razorpay({
-  key_id: "rzp_test_5fOFzd2Txaz6fT", // Your Razorpay Key ID
-  key_secret: "b6RT9foJESy1oHyrFBwKjfmW", // Your Razorpay Secret Key
+  key_id: "rzp_test_5fOFzd2Txaz6fT",
+  key_secret: "b6RT9foJESy1oHyrFBwKjfmW"
 });
 
 // Create Razorpay order
 router.post("/create-order", async (req, res) => {
-  const { amount, currency } = req.body;
-
   try {
-    const amountInPaise = amount * 100; // Amount in paise
-
     const options = {
-      amount: amountInPaise,
-      currency: currency,
-      receipt: `receipt_${new Date().getTime()}`,
-      payment_capture: 1, // Automatic capture of payment
+      amount: 5000,
+      currency: "INR",
+      receipt: `receipt_${Date.now()}`,
+      payment_capture: 1,
     };
 
     const order = await razorpay.orders.create(options);
-
     res.json({
       success: true,
       orderId: order.id,
@@ -33,34 +29,61 @@ router.post("/create-order", async (req, res) => {
     });
   } catch (error) {
     console.error("Error creating Razorpay order:", error);
-    res.status(500).json({ success: false, message: error.message });
+
+    if (error.response) {
+      console.error("Razorpay Error Response:", error.response.data);
+      res.status(500).json({ success: false, message: error.response.data.message });
+    } else {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+});
+
+// Verify payment and update status
+router.post("/verify-payment", authMiddleware, async (req, res) => {
+  try {
+    const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
+
+    // Verify signature
+    const body = razorpay_order_id + "|" + razorpay_payment_id;
+    const expectedSignature = crypto
+      .createHmac('sha256', "b6RT9foJESy1oHyrFBwKjfmW")
+      .update(body.toString())
+      .digest('hex');
+
+    const isAuthentic = expectedSignature === razorpay_signature;
+
+    if (isAuthentic) {
+      // Update user payment status
+      const user = await Auth.findById(req.user.userID);
+      if (!user) {
+        return res.status(404).json({ success: false, message: "User not found" });
+      }
+
+      user.hasPaidForPDF = true;
+      await user.save();
+
+      res.json({ success: true });
+    } else {
+      res.status(400).json({ success: false, message: "Invalid payment signature" });
+    }
+  } catch (error) {
+    console.error("Payment verification error:", error);
+    res.status(500).json({ success: false, message: "Error verifying payment" });
   }
 });
 
 // Check payment status
 router.get("/payment-status", authMiddleware, async (req, res) => {
   try {
-    const user = await Auth.findById(req.user.id);
-    res.json({ isPaid: user?.hasPaidForPDF || false });
+    const user = await Auth.findById(req.user.userID);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+    res.json({ isPaid: user.hasPaidForPDF || false });
   } catch (error) {
     console.error("Error fetching payment status:", error);
     res.status(500).json({ success: false, message: "Error fetching payment status" });
-  }
-});
-
-// Update payment status after successful payment
-router.post("/update-payment", authMiddleware, async (req, res) => {
-  try {
-    const user = await Auth.findById(req.user.id);
-    if (!user) return res.status(404).json({ success: false, message: "User not found" });
-
-    user.hasPaidForPDF = true; // Mark user as paid
-    await user.save();
-
-    res.json({ success: true, message: "Payment recorded successfully" });
-  } catch (error) {
-    console.error("Error updating payment status:", error);
-    res.status(500).json({ success: false, message: "Error updating payment status" });
   }
 });
 
