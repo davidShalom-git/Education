@@ -1,104 +1,125 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from 'react-router-dom';
+// Video.js
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { FaSearch } from "react-icons/fa";
 import axios from "axios";
-import { FaSearch } from 'react-icons/fa';
-import gsap from 'gsap';
-import { TextPlugin } from 'gsap/TextPlugin';
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
+import galaxy from '../assets/galaxy.png'
 import Logout from "../Auth/Logout";
-import galaxy from '../assets/galaxy.png';
-import physics from '../assets/phy.png';
-import chemistry from '../assets/chy.png';
-import py from '../assets/py.png';
-import java from '../assets/java.png';
-import js from '../assets/js.png';
-import eng from '../assets/eng.png';
-import dsa from '../assets/dsa.png';
-import ai from '../assets/ai.png';
-import Evs from '../Video/Evs.mp4';
-import Physics from '../Video/Physics.mp4';
-import Chemistry from '../Video/Chemistry.mp4';
-import Python from '../Video/Python.mp4';
-import Java from '../Video/Java.mp4';
-import Javascript from '../Video/JavaScript.mp4';
-import AI from '../Video/AI.mp4';
-import Dsa from '../Video/DSA.mp4';
-import English from '../Video/English.mp4';
-import gk from '../Video/English.mp4';
 
-gsap.registerPlugin(TextPlugin);
+import Evs from "../Video/Evs.mp4";
+import Physics from "../Video/Physics.mp4";
+import Chemistry from "../Video/Chemistry.mp4";
+import Python from "../Video/Python.mp4";
+import Java from "../Video/Java.mp4";
+import Javascript from "../Video/JavaScript.mp4";
+import AI from "../Video/AI.mp4";
+import Dsa from "../Video/DSA.mp4";
+import English from "../Video/English.mp4";
 
 const Video = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [isPaymentDone, setIsPaymentDone] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
-  const navRef = useRef(null);
-  const cardRefs = useRef([]);
-  const navigation = useNavigate();
-  const token = localStorage.getItem('token');
+  const topics = [
+    { title: "Physics", videoSrc: Physics },
+    { title: "Chemistry", videoSrc: Chemistry },
+    { title: "Python Programming", videoSrc: Python },
+    { title: "Java Programming", videoSrc: Java},
+    { title: "Professional English", videoSrc: English, },
+    { title: "DSA", videoSrc: Dsa},
+    { title: "JavaScript", videoSrc: Javascript },
+    { title: "Artificial Intelligence", videoSrc: AI},
+    { title: "General Knowledge", videoSrc: Evs, },
+  ];
 
+  // Check payment status on mount and after refresh
   useEffect(() => {
-    if (!token) {
-      navigation('/login');
-    }
-  }, [token, navigation]);
-
-  const toggleMenu = () => setIsOpen(!isOpen);
-
-  useEffect(() => {
-    const fetchUserPaymentStatus = async () => {
+    const checkPaymentStatus = async () => {
       if (!token) {
-        navigation('/login'); // Redirect if user is not logged in
+        navigate("/login");
         return;
       }
 
       try {
-        const response = await axios.get("https://education-1mov.onrender.com/api/pay/payment-status", {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const response = await axios.get(
+          "https://education-1-9tut.onrender.com/api/pay/payment-status",
+          {
+            headers: { "x-auth-token": token },
+          }
+        );
 
-        setIsPaymentDone(response.data.isPaid); // Update payment status for logged-in user
+        setIsPaymentDone(response.data.isPaid);
+        setLoading(false);
       } catch (error) {
-        console.error("Error fetching payment status:", error);
-        navigation('/login'); // Redirect on error
+        console.error("Error checking payment status:", error);
+        setLoading(false);
+        if (error.response?.status === 401) {
+          navigate("/login");
+        }
       }
     };
 
-    fetchUserPaymentStatus();
-  }, [token, navigation]); // Runs when token changes
+    checkPaymentStatus();
+  }, [token, navigate]);
 
   const handlePayment = async () => {
-    try {
-      const { data } = await axios.post("https://education-1-9tut.onrender.com/api/pay/create-order", {
-        amount: 20, // INR
-        currency: "INR",
-      });
+    const token = localStorage.getItem("token");
 
-      if (!data.success) {
+    try {
+      // Create order
+      const orderResponse = await axios.post(
+        "https://education-1-9tut.onrender.com/api/pay/create-order",
+        {},
+        {
+          headers: { "x-auth-token": token },
+        }
+      );
+
+      if (!orderResponse.data.success) {
         alert("Error creating order");
         return;
       }
 
       const options = {
         key: "rzp_test_5fOFzd2Txaz6fT",
-        amount: data.amount,
-        currency: data.currency,
+        amount: orderResponse.data.amount,
+        currency: orderResponse.data.currency,
         name: "Smart Learning",
-        description: "Video Purchase",
-        order_id: data.orderId,
+        description: "Video Access Payment",
+        order_id: orderResponse.data.orderId,
         handler: async function (response) {
-          alert("Payment successful: " + response.razorpay_payment_id);
-          setIsPaymentDone(true);
+          try {
+            // Verify payment
+            const verifyResponse = await axios.post(
+              "https://education-1-9tut.onrender.com/api/pay/verify-payment",
+              {
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+              },
+              {
+                headers: { "x-auth-token": token },
+              }
+            );
 
-          // Update payment status in the database for the logged-in user
-          await axios.post("https://education-1-9tut.onrender.com/api/user/update-payment", {}, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-
-          // Store payment status in localStorage for this user only
-          localStorage.setItem(`isPaid_${token}`, "true");
+            if (verifyResponse.data.success) {
+              setIsPaymentDone(true);
+              alert("Payment successful! You can now access all videos.");
+            } else {
+              alert("Payment verification failed. Please contact support.");
+            }
+          } catch (error) {
+            console.error("Payment verification error:", error);
+            alert("Payment verification failed. Please try again or contact support.");
+          }
+        },
+        prefill: {
+          name: "User",
+          email: "user@example.com",
         },
         theme: { color: "#3399cc" },
       };
@@ -107,60 +128,59 @@ const Video = () => {
       rzp.open();
     } catch (error) {
       console.error("Payment error:", error);
-      alert("Payment initiation failed.");
+      alert("Payment initiation failed. Please try again.");
     }
   };
 
-  const topics = [
-    { title: "Physics", videoSrc: Physics, imgSrc: physics },
-    { title: "Chemistry", videoSrc: Chemistry, imgSrc: chemistry },
-    { title: "Python Programming", videoSrc: Python, imgSrc: py },
-    { title: "Java Programming", videoSrc: Java, imgSrc: java },
-    { title: "Professional English", videoSrc: English, imgSrc: eng },
-    { title: "DSA", videoSrc: Dsa, imgSrc: dsa },
-    { title: "JavaScript", videoSrc: Javascript, imgSrc: js },
-    { title: "Artificial Intelligence", videoSrc: AI, imgSrc: ai },
-    { title: "General Knowledge", videoSrc: Evs, imgSrc: gk },
-  ];
-
-  const filteredTopics = topics.filter((topic) =>
-    topic.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   const handleVideoClick = (videoSrc) => {
     if (!isPaymentDone) {
-      alert("Please complete the payment first!");
-      navigation('/payment');
+      alert("Please complete the payment to access the Videos!");
+      handlePayment();
       return;
     }
     setSelectedVideo(videoSrc);
   };
 
+  if (loading) {
+    return (
+      <div className="container mx-auto my-10 px-6 flex justify-center items-center">
+        <div className="text-xl">Loading...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto my-10 px-6">
-      <div
-        className="container mx-auto px-6 py-5 flex flex-col md:flex-row justify-between items-center text-white rounded-[40px] bg-black mt-5"
-        ref={navRef}
-      >
-        <div className="flex justify-between w-full md:w-auto">
-          <img src={galaxy} alt="Galaxy Icon" className="h-10 w-10 animate-spin" />
-          <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
-            </svg>
-          </button>
-        </div>
-
-        <div className={`flex-1 md:flex ${isOpen ? "block" : "hidden"} md:block justify-center`}>
-          <ul className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-6 text-lg">
-            <li><Link to="/home" className="text-white hover:text-gray-400">Home</Link></li>
-            <li><Link to="/quiz" className="text-white hover:text-gray-400">Quiz</Link></li>
-            <li><Link to="/docs" className="text-white hover:text-gray-400">Docs</Link></li>
-            <li><Link to="/video" className="text-white hover:text-gray-400">Video</Link></li>
-            <li><Link to="/about" className="text-white hover:text-gray-400">About</Link></li>
-          </ul>
-        </div>
-
+      {/* Navigation Bar */}
+      <div className="container mx-auto px-6 py-5 flex flex-col md:flex-row justify-between items-center text-white rounded-[40px] bg-black mt-5">
+        <img src={galaxy} alt="Galaxy Icon" className="h-10 w-10 animate-spin" />
+        <ul className="flex space-x-6 text-lg">
+          <li>
+            <Link to="/home" className="text-white hover:text-gray-400">
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link to="/quiz" className="text-white hover:text-gray-400">
+              Quiz
+            </Link>
+          </li>
+          <li>
+            <Link to="/docs" className="text-white hover:text-gray-400">
+              Docs
+            </Link>
+          </li>
+          <li>
+            <Link to="/video" className="text-white hover:text-gray-400">
+              Video
+            </Link>
+          </li>
+          <li>
+            <Link to="/about" className="text-white hover:text-gray-400">
+              About
+            </Link>
+          </li>
+        </ul>
         <Logout />
       </div>
 
@@ -178,49 +198,59 @@ const Video = () => {
         </div>
       </div>
 
-      {/* Payment Section */}
-      {!isPaymentDone ? (
-        <div className="text-center mt-10">
-          <h2 className="text-2xl font-bold mb-4">Complete Payment to Access Videos</h2>
-          <button onClick={handlePayment} className="bg-green-500 text-white px-6 py-3 rounded-lg">Pay Now</button>
+      {/* Payment Status Message */}
+      {!isPaymentDone && (
+        <div className="text-center mb-8 bg-blue-50 p-6 rounded-lg">
+          <p className="text-lg mb-4">Complete the payment to access all Videos</p>
+          <button
+            onClick={handlePayment}
+            className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            Make Payment (₹50 only)
+          </button>
         </div>
-      ) : !selectedVideo ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-20 mt-20">
-          {filteredTopics.map((topic, index) => (
-            <div
-              key={index}
-              className="shadow-lg p-6 rounded-lg bg-black text-white cursor-pointer"
-              onClick={() => handleVideoClick(topic.videoSrc)}
-              ref={(el) => (cardRefs.current[index] = el)}
-            >
-              <img
-                src={topic.imgSrc}
-                className="h-[150px] md:h-[180px] mx-auto"
-                alt={topic.title}
-              />
-              <h1 className="text-center mt-6 text-lg">{topic.title}</h1>
-              <p className="text-center mt-2">Click to View Video</p>
-            </div>
-          ))}
+      )}
+
+      {/* Video Grid or Viewer */}
+      {!selectedVideo ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20 mt-20">
+          {topics
+            .filter((topic) =>
+              topic.title.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+            .map((topic, index) => (
+              <div
+                key={index}
+                className={`shadow-lg p-6 rounded-[35px] ${
+                  isPaymentDone ? "bg-black hover:bg-gray-800" : "bg-gray-500"
+                } text-white cursor-pointer transition-colors`}
+                onClick={() => handleVideoClick(topic.videoSrc)}
+              >
+                <img
+                  className="h-[150px] md:h-[180px] mx-auto"
+                  alt={topic.title}
+                />
+                <h1 className="text-center mt-6 text-lg md:text-xl">{topic.title}</h1>
+                <p className="text-center mt-2">
+                  {isPaymentDone ? "Click to View Video" : "Payment Required"}
+                </p>
+              </div>
+            ))}
         </div>
       ) : (
-        // Video Viewer Section
-        <div className="flex flex-col items-center">
+        <div className="relative">
           <button
-            className="bg-red-500 text-white px-6 py-2 rounded-full mb-6"
             onClick={() => setSelectedVideo(null)}
+            className="absolute top-4 left-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
           >
-            Back to List
+            Back to Topics
           </button>
-          <div className="w-full flex flex-col items-center">
-            {/* Video Player */}
-            <video
-              src={selectedVideo}
-              title="Video Viewer"
-              controls
-              className="w-full h-[80vh] shadow-lg rounded-[35px] bg-white mb-4"
-            ></video>
-          </div>
+          <video
+            src={selectedVideo}
+            controls
+            className="w-full h-screen rounded-[35px] shadow-lg bg-black"
+            title="Video Viewer"
+          />
         </div>
       )}
     </div>

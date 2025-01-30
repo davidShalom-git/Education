@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const router = express.Router();
 const Auth = require('../Auth-Model/Auth');
 const authMiddleware = require("../Auth-Middle/Auth-Middle");
+require('dotenv').config();
 
 const razorpay = new Razorpay({
   key_id: "rzp_test_5fOFzd2Txaz6fT",
@@ -11,16 +12,17 @@ const razorpay = new Razorpay({
 });
 
 // Create Razorpay order
-router.post("/create-order", async (req, res) => {
+router.post("/create-order", authMiddleware, async (req, res) => {
   try {
     const options = {
-      amount: 5000,
+      amount: 5000, // Amount in paise (₹50)
       currency: "INR",
       receipt: `receipt_${Date.now()}`,
       payment_capture: 1,
     };
 
     const order = await razorpay.orders.create(options);
+
     res.json({
       success: true,
       orderId: order.id,
@@ -30,14 +32,16 @@ router.post("/create-order", async (req, res) => {
   } catch (error) {
     console.error("Error creating Razorpay order:", error);
 
-    if (error.response) {
-      console.error("Razorpay Error Response:", error.response.data);
-      res.status(500).json({ success: false, message: error.response.data.message });
+    if (error.error) {
+      // Razorpay-specific error details
+      console.error("Razorpay Error Details:", error.error);
+      res.status(500).json({ success: false, message: error.error.description });
     } else {
-      res.status(500).json({ success: false, message: error.message });
+      res.status(500).json({ success: false, message: "Server Error" });
     }
   }
 });
+
 
 // Verify payment and update status
 router.post("/verify-payment", authMiddleware, async (req, res) => {

@@ -72,9 +72,9 @@ const Docs = () => {
       // Create order
       const orderResponse = await axios.post(
         "https://education-1-9tut.onrender.com/api/pay/create-order",
-        {},
+        {}, // No body needed
         {
-          headers: { "x-auth-token": token }
+          headers: { "x-auth-token": token },
         }
       );
   
@@ -98,10 +98,10 @@ const Docs = () => {
               {
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_order_id: response.razorpay_order_id,
-                razorpay_signature: response.razorpay_signature
+                razorpay_signature: response.razorpay_signature,
               },
               {
-                headers: { "x-auth-token": token }
+                headers: { "x-auth-token": token },
               }
             );
   
@@ -118,9 +118,9 @@ const Docs = () => {
         },
         prefill: {
           name: "User",
-          email: "user@example.com"
+          email: "user@example.com",
         },
-        theme: { color: "#3399cc" }
+        theme: { color: "#3399cc" },
       };
   
       const rzp = new window.Razorpay(options);
@@ -130,6 +130,7 @@ const Docs = () => {
       alert("Payment initiation failed. Please try again.");
     }
   };
+  
   
 
   
