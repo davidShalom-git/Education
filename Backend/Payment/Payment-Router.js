@@ -1,25 +1,25 @@
 const express = require("express");
 const Razorpay = require("razorpay");
-const router = express.Router()
+const router = express.Router();
+const Auth = require('../Auth-Model/Auth');
+const authMiddleware = require("../Auth-Middle/Auth-Middle");
 
 const razorpay = new Razorpay({
-  key_id: "rzp_test_5fOFzd2Txaz6fT", // Replace with your Razorpay Key ID
-  key_secret: "b6RT9foJESy1oHyrFBwKjfmW", // Replace with your Razorpay Secret Key
+  key_id: "rzp_test_5fOFzd2Txaz6fT",
+  key_secret: "b6RT9foJESy1oHyrFBwKjfmW"
 });
-
 
 router.post("/create-order", async (req, res) => {
   const { amount, currency } = req.body;
 
   try {
-    // Razorpay expects the amount in paise (1 INR = 100 paise)
     const amountInPaise = amount * 100;
 
     const options = {
-      amount: amountInPaise,  // Amount in paise
+      amount: amountInPaise,
       currency: currency,
       receipt: `receipt_${new Date().getTime()}`,
-      payment_capture: 1, // Automatic capture of payment
+      payment_capture: 1,
     };
 
     const order = await razorpay.orders.create(options);
@@ -36,6 +36,29 @@ router.post("/create-order", async (req, res) => {
   }
 });
 
+router.get("/payment-status", authMiddleware, async (req, res) => {
+  try {
+    const user = await Auth.findById(req.user.userID);
+    res.json({ isPaid: user?.hasPaidForPDF || false });
+  } catch (error) {
+    console.error("Error fetching payment status:", error);
+    res.status(500).json({ success: false, message: "Error fetching payment status" });
+  }
+});
+
+router.post("/update-payment", authMiddleware, async (req, res) => {
+  try {
+    const user = await Auth.findById(req.user.userID);
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+    user.hasPaidForPDF = true;
+    await user.save();
+
+    res.json({ success: true, message: "Payment recorded successfully" });
+  } catch (error) {
+    console.error("Error updating payment status:", error);
+    res.status(500).json({ success: false, message: "Error updating payment status" });
+  }
+});
 
 module.exports = router;
-

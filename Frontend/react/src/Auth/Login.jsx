@@ -9,7 +9,7 @@ const SignIn = () => {
   const [Password, SetPassword] = useState('');
   const navigate = useNavigate();
 
-  const url = 'http://localhost:1300/api/auth/login';
+  const url = 'https://education-1mov.onrender.com/api/auth/login';
 
   const signIn = async () => {
     try {
