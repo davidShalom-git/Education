@@ -10,7 +10,7 @@ const SignUp = () => {
   const [Password, SetPassword] = useState('');
   const navigate = useNavigate();
 
-  const url = 'https://education-1mov.onrender.com/api/auth/register';
+  const url = 'https://education-1-9tut.onrender.com/api/auth/register';
 
   const signUp = async () => {
     try {

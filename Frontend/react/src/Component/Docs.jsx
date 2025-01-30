@@ -41,7 +41,7 @@ const Docs = () => {
       }
 
       try {
-        const response = await axios.get("https://education-1mov.onrender.com/api/pay/payment-status", {
+        const response = await axios.get("https://education-1-9tut.onrender.com/api/pay/payment-status", {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -57,7 +57,7 @@ const Docs = () => {
 
   const handlePayment = async () => {
     try {
-      const { data } = await axios.post("https://education-1mov.onrender.com/api/pay/create-order", {
+      const { data } = await axios.post("https://education-1-9tut.onrender.com/api/pay/create-order", {
         amount: 50, // INR
         currency: "INR",
       });

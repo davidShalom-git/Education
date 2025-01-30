@@ -70,7 +70,7 @@ const Video = () => {
 
   const handlePayment = async () => {
     try {
-      const { data } = await axios.post("https://education-1mov.onrender.com/api/pay/create-order", {
+      const { data } = await axios.post("https://education-1-9tut.onrender.com/api/pay/create-order", {
         amount: 20, // INR
         currency: "INR",
       });
@@ -92,7 +92,7 @@ const Video = () => {
           setIsPaymentDone(true);
 
           // Update payment status in the database for the logged-in user
-          await axios.post("https://education-1mov.onrender.com/api/user/update-payment", {}, {
+          await axios.post("https://education-1-9tut.onrender.com/api/user/update-payment", {}, {
             headers: { Authorization: `Bearer ${token}` }
           });
 
