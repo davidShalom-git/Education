@@ -25,7 +25,7 @@ const Docs = () => {
   const navRef = useRef(null);
     const imageref = useRef(null);
     const imagerefCard1 = useRef(null);
-    const imagerefCard2 = useRef(null);
+    const imagerefCard2 = useRef(null); 
     const imagerefCard3 = useRef(null);
     const textRef = useRef(null);
     const h1Ref = useRef(null);
