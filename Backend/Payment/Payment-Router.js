@@ -15,7 +15,7 @@ const razorpay = new Razorpay({
 router.post("/create-order", authMiddleware, async (req, res) => {
   try {
     const options = {
-      amount: 5000, // Amount in paise (₹50)
+      amount: 1000, // Amount in paise (₹50)
       currency: "INR",
       receipt: `receipt_${Date.now()}`,
       payment_capture: 1,
