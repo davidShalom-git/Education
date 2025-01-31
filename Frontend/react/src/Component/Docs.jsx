@@ -14,6 +14,7 @@ import Evs from "../assets/Evs.pdf";
 import English from "../assets/English.pdf";
 import Physics from "../assets/Physics.pdf";
 import Chemistry from "../assets/Chemistry.pdf";
+import gsap from "gsap";
 
 const Docs = () => {
   const [searchQuery, setSearchQuery] = useState("");
