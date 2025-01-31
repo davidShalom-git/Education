@@ -1,5 +1,5 @@
 // Video.js
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import axios from "axios";
@@ -15,6 +15,7 @@ import Javascript from "../Video/JavaScript.mp4";
 import AI from "../Video/AI.mp4";
 import Dsa from "../Video/DSA.mp4";
 import English from "../Video/English.mp4";
+import gsap from "gsap";
 
 const Video = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -23,6 +24,41 @@ const Video = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const [isOpen, setIsOpen] = useState(false);
+  const navRef = useRef(null);
+
+
+  const toggleMenu = () => setIsOpen(!isOpen);
+
+
+  useEffect(() => {
+    const mm = gsap.matchMedia();
+
+    mm.add(
+      {
+        // Define breakpoints for responsive animations
+        isDesktop: "(min-width: 1024px)",
+        isTablet: "(max-width: 1023px)",
+        isMobile: "(max-width: 768px)",
+      },
+      (context) => {
+        const { isDesktop, isTablet, isMobile } = context.conditions;
+
+        // Navigation animation
+        gsap.fromTo(
+          navRef.current,
+          { y: -100, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1, ease: "power2.out" }
+        );
+
+      }
+    );
+
+    return () => {
+      mm.revert(); // Ensure all animations and matchMedia instances are cleaned up
+    };
+  }, []); // Empty dependency array ensures this runs only 
+
 
   const topics = [
     { title: "Physics", videoSrc: Physics },
