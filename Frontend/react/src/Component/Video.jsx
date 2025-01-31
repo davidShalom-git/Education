@@ -121,7 +121,7 @@ const Video = () => {
       }
 
       const options = {
-        key: "rzp_test_5fOFzd2Txaz6fT",
+        key: "rzp_live_OAWOFdY1HWpVXQ",
         amount: orderResponse.data.amount,
         currency: orderResponse.data.currency,
         name: "Smart Learning",

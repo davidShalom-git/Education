@@ -7,8 +7,8 @@ const authMiddleware = require("../Auth-Middle/Auth-Middle");
 require('dotenv').config();
 
 const razorpay = new Razorpay({
-  key_id: "rzp_test_5fOFzd2Txaz6fT",
-  key_secret: "b6RT9foJESy1oHyrFBwKjfmW"
+  key_id: "rzp_live_OAWOFdY1HWpVXQ",
+  key_secret: "drE0yI9Fvy9ce2UCorLFVFLr"
 });
 
 // Create Razorpay order
