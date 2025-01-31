@@ -168,11 +168,11 @@ const Docs = () => {
 
       {/* Search Bar */}
       <div className="flex justify-center items-center mt-10 mb-10">
-        <div className="relative">
+        <div className="relative w-full max-w-lg">
           <input
             type="text"
             placeholder="Enter the Topic.."
-            className="shadow-xl px-16 py-4 rounded-[50px] w-full"
+            className="shadow-xl pl-16 pr-4 py-4 rounded-[50px] w-full"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -195,7 +195,7 @@ const Docs = () => {
 
       {/* PDF Grid or Viewer */}
       {!selectedPdf ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20 mt-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20 mt-20">
           {topics
             .filter(topic =>
               topic.title.toLowerCase().includes(searchQuery.toLowerCase())

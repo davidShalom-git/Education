@@ -115,9 +115,8 @@ const Nav = () => {
 
   return (
     <>
-    <div>
+    <div className="container mx-auto my-10 px-6">
       
-    </div>
       <div
   className="container flex flex-col md:flex-row justify-between items-center text-white px-6 py-5 rounded-[40px] mx-auto bg-black mt-5"
   ref={navRef}
@@ -304,6 +303,7 @@ const Nav = () => {
   </div>
 
 </div>
+    </div>
 
 
       <footer className="bg-black text-white py-10">

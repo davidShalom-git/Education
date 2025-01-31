@@ -165,76 +165,75 @@ const Nav = () => {
     <div className="container mx-auto my-10 px-6">
 
 
-      <div
-        className="container flex flex-col md:flex-row justify-between items-center text-white p-5 rounded-[40px] mx-auto bg-black mt-5"
-        ref={navRef}
+    <div
+  className="container flex flex-col md:flex-row justify-between items-center text-white px-6 py-5 rounded-[40px] mx-auto bg-black mt-5"
+  ref={navRef}
+>
+  {/* Left Section */}
+  <div className="flex justify-between w-full md:w-auto">
+    <img
+      src={galaxy}
+      alt="Galaxy Icon"
+      className="h-10 w-10 animate-spin"
+    />
+    <button
+      className="md:hidden"
+      onClick={toggleMenu}
+      aria-label="Toggle Menu"
+    >
+      <svg
+        className="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        {/* Left Section */}
-        <div className="flex justify-between w-full md:w-auto">
-          <img
-            src={galaxy}
-            alt="Galaxy Icon"
-            className="h-10 w-10 animate-spin"
-          />
-          <button
-            className="md:hidden"
-            onClick={toggleMenu}
-            aria-label="Toggle Menu"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16m-7 6h7"
-              ></path>
-            </svg>
-          </button>
-        </div>
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M4 6h16M4 12h16m-7 6h7"
+        ></path>
+      </svg>
+    </button>
+  </div>
 
-        {/* Center Section (Links) */}
-        <div
-          className={`flex-1 md:flex ${isOpen ? "block" : "hidden"
-            } md:block justify-center mt-4 md:mt-0`}
-        >
-          <ul className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
-            <li>
-              <Link to="/home" className="text-xl text-white hover:text-gray-400">
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link to="/quiz" className="text-xl text-white hover:text-gray-400">
-                Quiz
-              </Link>
-            </li>
-            <li>
-              <Link to="/docs" className="text-xl text-white hover:text-gray-400">
-                Docs
-              </Link>
-            </li>
-            <li>
-              <Link to="/video" className="text-xl text-white hover:text-gray-400">
-                Video
-              </Link>
-            </li>
-            <li>
-              <Link to="/about" className="text-xl text-white hover:text-gray-400">
-                About
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        {/* Right Section (Profile Icon) */}
-        <Logout />
-      </div>
+  {/* Center Section (Links) */}
+  <div
+    className={`flex-1 md:flex ${isOpen ? "block" : "hidden"
+      } md:block justify-center mt-4 md:mt-0`}
+  >
+    <ul className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
+      <li>
+        <Link to="/home" className="text-xl text-white hover:text-gray-400">
+          Home
+        </Link>
+      </li>
+      <li>
+        <Link to="/quiz" className="text-xl text-white hover:text-gray-400">
+          Quiz
+        </Link>
+      </li>
+      <li>
+        <Link to="/docs" className="text-xl text-white hover:text-gray-400">
+          Docs
+        </Link>
+      </li>
+      <li>
+        <Link to="/video" className="text-xl text-white hover:text-gray-400">
+          Video
+        </Link>
+      </li>
+      <li>
+        <Link to="/about" className="text-xl text-white hover:text-gray-400">
+          About
+        </Link>
+      </li>
+    </ul>
+  </div>
+  {/* Right Section (Profile Icon) */}
+  <Logout />
+</div>
 
       <div className="container flex justify-evenly items-center mt-12 flex-col md:flex-row mx-auto p-5 md:p-10 rounded-[50px] mb-12 md:mb-24 shadow shadow-md shadow-black">
         <div className="mb-5 md:mb-0">
@@ -245,7 +244,7 @@ const Nav = () => {
             alt="David Shalom"
           />
         </div>
-        <div ref={textRef} className="mb-5 md:mb-0 border border-white bg-black p-5 md:p-16 rounded-3xl mt-5 md:mt-0">
+        <div ref={textRef} className="mb-5 md:mb-0 border border-white bg-black p-3 md:p-16 rounded-3xl mt-5 md:mt-0">
           <h1 ref={h1Ref} className="text-7xl text-white mb-2"></h1>
           <p className="text-2xl text-white">Education Matters and Important to Everyone</p>
         </div>
