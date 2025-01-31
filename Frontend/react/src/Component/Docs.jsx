@@ -163,58 +163,6 @@ const Docs = () => {
           { y: 0, opacity: 1, duration: 1, ease: "power2.out" }
         );
 
-        // Hero section animations
-        const timeline = gsap.timeline();
-        timeline
-          .from(
-            imageref.current,
-            {
-              x: isMobile ? 0 : isTablet ? -100 : -200,
-              opacity: 0,
-              duration: 1.5,
-              ease: "power2.out",
-            },
-            0.5
-          )
-          .from(
-            textRef.current,
-            {
-              y: isMobile ? 50 : 200,
-              opacity: 0,
-              duration: 1.5,
-              ease: "power2.out",
-            },
-            "-=1"
-          )
-          .to(
-            h1Ref.current,
-            {
-              text: "Smart Learning...",
-              duration: 2,
-              ease: "power2.inOut",
-            },
-            "-=1"
-          );
-
-        // Cards animation
-        const cardRefs = [
-          imagerefCard1.current,
-          imagerefCard2.current,
-          imagerefCard3.current,
-        ];
-
-        gsap.from(cardRefs, {
-          y: isMobile ? 100 : 200,
-          opacity: 0,
-          duration: 1,
-          ease: "power2.out",
-          stagger: 0.3,
-        });
-
-        // Return cleanup function for this matchMedia context
-        return () => {
-          timeline.revert();
-        };
       }
     );
 
