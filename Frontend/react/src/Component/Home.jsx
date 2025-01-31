@@ -164,7 +164,6 @@ const Nav = () => {
     <>
     <div className="container mx-auto my-10 px-6">
 
-
     <div
   className="container flex flex-col md:flex-row justify-between items-center text-white px-6 py-5 rounded-[40px] mx-auto bg-black mt-5"
   ref={navRef}
@@ -234,6 +233,7 @@ const Nav = () => {
   {/* Right Section (Profile Icon) */}
   <Logout />
 </div>
+
 
       <div className="container flex justify-evenly items-center mt-12 flex-col md:flex-row mx-auto p-5 md:p-10 rounded-[50px] mb-12 md:mb-24 shadow shadow-md shadow-black">
         <div className="mb-5 md:mb-0">
