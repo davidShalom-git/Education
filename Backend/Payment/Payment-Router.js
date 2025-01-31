@@ -7,8 +7,8 @@ const authMiddleware = require("../Auth-Middle/Auth-Middle");
 require('dotenv').config();
 
 const razorpay = new Razorpay({
-  key_id: "rzp_live_OAWOFdY1HWpVXQ",
-  key_secret: "drE0yI9Fvy9ce2UCorLFVFLr"
+  key_id: "rzp_live_1eNtMBBB3ATAfU",
+  key_secret: "d0zzbVqTyDRdZcPlKZGZioid"
 });
 
 // Create Razorpay order
@@ -51,7 +51,7 @@ router.post("/verify-payment", authMiddleware, async (req, res) => {
     // Verify signature
     const body = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSignature = crypto
-      .createHmac('sha256', "drE0yI9Fvy9ce2UCorLFVFLr")
+      .createHmac('sha256', "d0zzbVqTyDRdZcPlKZGZioid")
       .update(body.toString())
       .digest('hex');
 
