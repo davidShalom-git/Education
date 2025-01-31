@@ -1,5 +1,5 @@
 // Docs.js
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import axios from "axios";
@@ -19,9 +19,19 @@ const Docs = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPdf, setSelectedPdf] = useState(null);
   const [isPaymentDone, setIsPaymentDone] = useState(false);
+   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const navRef = useRef(null);
+    const imageref = useRef(null);
+    const imagerefCard1 = useRef(null);
+    const imagerefCard2 = useRef(null);
+    const imagerefCard3 = useRef(null);
+    const textRef = useRef(null);
+    const h1Ref = useRef(null);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+
+  const toggleMenu = () => setIsOpen(!isOpen);
 
   const topics = [
     { title: "Physics", pdfSrc: Physics },
@@ -132,6 +142,85 @@ const Docs = () => {
   };
   
   
+  useEffect(() => {
+    const mm = gsap.matchMedia();
+
+    mm.add(
+      {
+        // Define breakpoints for responsive animations
+        isDesktop: "(min-width: 1024px)",
+        isTablet: "(max-width: 1023px)",
+        isMobile: "(max-width: 768px)",
+      },
+      (context) => {
+        const { isDesktop, isTablet, isMobile } = context.conditions;
+
+        // Navigation animation
+        gsap.fromTo(
+          navRef.current,
+          { y: -100, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1, ease: "power2.out" }
+        );
+
+        // Hero section animations
+        const timeline = gsap.timeline();
+        timeline
+          .from(
+            imageref.current,
+            {
+              x: isMobile ? 0 : isTablet ? -100 : -200,
+              opacity: 0,
+              duration: 1.5,
+              ease: "power2.out",
+            },
+            0.5
+          )
+          .from(
+            textRef.current,
+            {
+              y: isMobile ? 50 : 200,
+              opacity: 0,
+              duration: 1.5,
+              ease: "power2.out",
+            },
+            "-=1"
+          )
+          .to(
+            h1Ref.current,
+            {
+              text: "Smart Learning...",
+              duration: 2,
+              ease: "power2.inOut",
+            },
+            "-=1"
+          );
+
+        // Cards animation
+        const cardRefs = [
+          imagerefCard1.current,
+          imagerefCard2.current,
+          imagerefCard3.current,
+        ];
+
+        gsap.from(cardRefs, {
+          y: isMobile ? 100 : 200,
+          opacity: 0,
+          duration: 1,
+          ease: "power2.out",
+          stagger: 0.3,
+        });
+
+        // Return cleanup function for this matchMedia context
+        return () => {
+          timeline.revert();
+        };
+      }
+    );
+
+    return () => {
+      mm.revert(); // Ensure all animations and matchMedia instances are cleaned up
+    };
+  }, []); // Empty dependency array ensures this runs only 
 
   
   const handlePdfClick = (pdfSrc) => {
