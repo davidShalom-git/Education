@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import College from '../assets/College.jpg';
+import Edu from '../assets/Edu.jpg';
 
 const SignIn = () => {
   const [Email, setEmail] = useState('');
@@ -49,7 +49,7 @@ const SignIn = () => {
   return (
     <div
       style={{
-        backgroundImage: `url(${College})`,
+        backgroundImage: `url(${Edu})`,
         height: '100vh',
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
@@ -57,8 +57,8 @@ const SignIn = () => {
     >
       <div className="flex flex-col justify-center items-center h-full" style={containerStyle}>
         <div className="text-center mb-10 p-5 rounded-lg" style={titleStyle}>
-          <h1 className="text-5xl text-white">Arunai Engineering College</h1>
-          <h4 className="mt-2 text-xl text-white">(Autonomous Institution)</h4>
+          <h1 className="text-5xl text-white">E-Learning</h1>
+          <h4 className="mt-2 text-xl text-white">(Simplified Way to Learn)</h4>
         </div>
         <div className="flex flex-col items-center px-20 py-36" style={glassStyle}>
           <h1 className="mb-24 text-5xl text-white">Login In</h1>
