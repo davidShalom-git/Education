@@ -278,7 +278,7 @@ const Nav = () => {
         </div>
 
         {/* Text Section */}
-        <div className='flex flex-col justify-center items-center h-auto w-[108%] md:w-[100%] mt-20 md:w-[50%] lg:w-[50%] mx-auto bg-black p-7 '>
+        <div className='flex flex-col justify-center items-center h-auto w-[108%] md:w-[100%] mt-20 lg:w-[50%] mx-auto bg-black p-7 '>
           <h2 className="text-2xl md:text-3xl font-bold text-white text-center md:text-left mb-4">
             Learn What Matters
           </h2>
