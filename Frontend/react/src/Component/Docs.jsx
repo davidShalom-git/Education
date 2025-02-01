@@ -89,7 +89,7 @@ const Docs = () => {
       }
   
       const options = {
-        key: "rzp_live_1eNtMBBB3ATAfU",
+        key: "rzp_live_LODynINQB1J1t5",
         amount: orderResponse.data.amount,
         currency: orderResponse.data.currency,
         name: "Smart Learning",
