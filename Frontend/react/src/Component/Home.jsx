@@ -162,7 +162,7 @@ const Nav = () => {
 
   return (
     <>
-    <div className="container mx-auto my-10 px-6">
+    <div className="container mx-auto">
 
     <div
   className="container flex flex-col md:flex-row justify-between items-center text-white px-6 py-5 rounded-[40px] mx-auto bg-black mt-5"
@@ -235,59 +235,50 @@ const Nav = () => {
 </div>
 
 
-      <div className="container flex justify-evenly items-center mt-12 flex-col md:flex-row mx-auto p-5 md:p-10 rounded-[50px] mb-12 md:mb-24 shadow shadow-md shadow-black">
-        <div className="mb-5 md:mb-0">
-          <img
-            ref={imageref}
-            src={Study}
-            className="h-[490px] md:w-[490px] w-[420px] mt-5 rounded-3xl"
-            alt="David Shalom"
-          />
-        </div>
-        <div ref={textRef} className="mb-5 md:mb-0 border border-white bg-black p-3 md:p-16 rounded-3xl mt-5 md:mt-0">
-          <h1 ref={h1Ref} className="text-7xl text-white mb-2"></h1>
-          <p className="text-2xl text-white">Education Matters and Important to Everyone</p>
+      <div className="container flex justify-evenly items-center mt-20 flex-row md:flex-row lg:flex-row mx-auto p-5 md:p-10 rounded-[50px] mb-20 md:mb-24">
+        <div ref={textRef} className="mb-5 md:mb-0 border border-white p-3 md:p-16 rounded-3xl mt-5 md:mt-0">
+          <h1 ref={h1Ref} className="md:text-7xl text-6xl text-black font-bold mb-2"></h1>
+          <p className="text-2xl text-black">Education Matters and Important to Everyone</p>
         </div>
       </div>
 
 
-      <div className="flex flex-col md:flex-row space-x-0 md:space-x-5 justify-center mt-5 mb-20 px-5 md:px-10">
+      <div className="flex flex-col lg:flex-row md:flex-col space-y-5 lg:space-x-5 md:space-y-5 justify-center mt-5 mb-20 px-3">
         <div
-          className="shadow-lg shadow-black p-10 md:p-24 mb-10 rounded-full bg-black"
+          className="shadow-lg shadow-black p-7 md:p-20 rounded-[90px] bg-black"
           ref={imagerefCard1}
         >
-          <img src={learn} className="h-[200px] md:h-[260px] mx-auto" alt="Learn" />
+          <img src={learn} className="h-[180px] md:h-[200px] lg:h-[200px] lg:w-[330px] md:w-[200px] mx-auto" alt="Learn" />
           <h1 className="text-center mt-10 text-xl md:text-3xl text-white">Easy to Learn</h1>
         </div>
         <div
-          className="shadow-lg shadow-black p-10 md:p-24 mb-10 rounded-full "
-          ref={imagerefCard2}
+          className="shadow-lg shadow-black p-7 md:p-20 rounded-[90px] bg-black"
+          ref={imagerefCard1}
         >
-          <img
-            src={anytime}
-            className="h-[200px] md:h-[260px] w-[230px] md:w-[340px] mx-auto"
-            alt="Anytime"
-          />
-          <h1 className="text-center mt-10 text-xl md:text-3xl">Learn at Anytime</h1>
+          <img src={anytime} className="h-[180px] md:h-[200px] lg:h-[220px] lg:w-[350px] md:w-[200px] mx-auto" alt="Learn" />
+          <h1 className="text-center mt-10 text-xl md:text-3xl text-white">Easy to Learn</h1>
         </div>
         <div
-          className="shadow-lg shadow-black p-10 md:p-24 mb-10 rounded-full bg-black"
-          ref={imagerefCard3}
+          className="shadow-lg shadow-black p-7 md:p-20 rounded-[90px] bg-black"
+          ref={imagerefCard1}
         >
-          <img src={available} className="h-[200px] md:h-[300px] mx-auto" alt="Available" />
-          <h1 className="text-center mt-10 text-xl md:text-3xl text-white">Available</h1>
+          <img src={available} className="h-[180px] md:h-[200px] lg:h-[220px] lg:w-[350px] md:w-[200px] mx-auto" alt="Learn" />
+          <h1 className="text-center mt-10 text-xl md:text-3xl text-white">Easy to Learn</h1>
         </div>
+        
+        
+        
       </div>
 
 
-      <div className='flex flex-col md:flex-row mt-12 mb-10 justify-between border border-black p-6 md:p-10 mx-4 md:mx-auto rounded-xl shadow-lg max-w-7xl'>
+      <div className='flex flex-col mx-auto md:flex-col lg:flex-row lg:space-x-2 mt-20 mb-10 justify-between md:border lg:border md:border-black lg:border-black px-3 md:p-10 lg:p-12 mx-4 md:mx-auto rounded-xl shadow-lg'>
         {/* Image Section */}
         <div className='flex justify-center mb-6 md:mb-0'>
           <img src={learm} className="h-[300px] md:h-[440px] w-auto mx-auto rounded-lg " alt="Learn" />
         </div>
 
         {/* Text Section */}
-        <div className='flex flex-col justify-center md:w-[50%] bg-black p-10 '>
+        <div className='flex flex-col justify-center items-center h-auto w-[108%] md:w-[100%] mt-20 md:w-[80%] lg:w-[50%] mx-auto bg-black p-7 '>
           <h2 className="text-2xl md:text-3xl font-bold text-white text-center md:text-left mb-4">
             Learn What Matters
           </h2>
@@ -298,25 +289,25 @@ const Nav = () => {
 
       </div>
 
-      <div className='flex flex-col md:flex-row mt-12 mb-10 justify-between border border-black p-6 md:p-10 mx-4 md:mx-auto rounded-xl shadow-lg max-w-7xl'>
+      <div className='flex flex-col mx-auto md:flex-col lg:flex-row lg:space-x-2 mt-12 mb-10 justify-between md:border lg:border md:border-black lg:border-black p-3 md:p-10 lg:p-12 mx-4 md:mx-auto rounded-xl'>
         {/* Image Section */}
+        <div className='flex justify-center mb-6 md:mb-0'>
+          <img src={ignite} className="h-[300px] md:h-[440px] w-auto mx-auto rounded-lg " alt="Learn" />
+        </div>
 
         {/* Text Section */}
-        <div className='flex flex-col justify-center md:w-[50%] bg-black p-10 '>
+        <div className='flex flex-col justify-center items-center h-auto w-[108%] mt-20 md:w-[100%] lg:w-[50%] mx-auto bg-black p-6 '>
           <h2 className="text-2xl md:text-3xl font-bold text-white text-center md:text-left mb-4">
-            Ignite Your Passion
+            Learn What Matters
           </h2>
           <p className='text-base md:text-lg text-white leading-relaxed'>
-            True learning begins when you uncover your passions. It’s not just about mastering subjects or passing exams—it's about discovering what drives you and makes you feel alive. Passion fuels progress and gives you the motivation to keep going, even when things get tough. By embracing what excites you most, you can unlock your full potential and transform challenges into opportunities. Passion is the key to a meaningful and fulfilling life. So, ignite your passion and begin the journey of self-discovery and growth.
+            Education is not just about acquiring knowledge; it is about learning what truly matters in life. Whether you're exploring new skills or diving deeper into your passions, the journey of learning shapes the future. Focus on what excites you, what sparks curiosity, and what has the power to impact your life and the world around you. With the right tools and mindset, anything is possible. Start learning today and discover the true power of education.
           </p>
         </div>
 
-        <div className='flex justify-center mb-6 md:mb-0'>
-          <img src={ignite} className="h-[300px] md:h-[400px] w-auto mx-auto rounded-lg " alt="Learn" />
-        </div>
       </div>
 
-      <div className="bg-black p-6 sm:p-10 w-full sm:w-3/4 md:w-2/3 mx-auto mb-10 rounded-[40px]">
+      <div className="bg-black p-6 sm:p-10 w-[95%] sm:w-3/4 md:w-2/3 mx-auto mb-10 rounded-[40px]">
         <h1 className="text-white text-center text-lg sm:text-2xl font-bold italic leading-relaxed">
           "Education is the passport to the future, for tomorrow belongs to those who prepare for it today."
         </h1>
@@ -342,14 +333,14 @@ const Nav = () => {
         </div>
       </div>
 
-      <div className="bg-black p-6 sm:p-10 w-full sm:w-3/4 md:w-2/3 mx-auto mb-10 mt-36 rounded-[40px]">
+      <div className="bg-black p-6 w-[95%] sm:p-10 w-full sm:w-3/4 md:w-2/3 mx-auto mb-10 mt-36 rounded-[40px]">
         <h1 className="text-white text-center text-lg sm:text-2xl font-bold italic leading-relaxed">
           "World is Changing, Everytime we loose, We damgage our self, No more Waiting, Let's Rock."
         </h1>
       </div>
     </div>
 
-    <div className="bg-black p-6 sm:p-10 w-full sm:w-3/4 md:w-1/2 mx-auto mb-10 rounded-[40px]">
+    <div className="bg-black p-6 w-[95%] sm:p-10 w-full sm:w-3/4 md:w-1/2 mx-auto mb-10 rounded-[40px]">
   <h1 className="text-white text-center text-lg sm:text-2xl font-bold italic leading-relaxed">
     Our Services
   </h1>

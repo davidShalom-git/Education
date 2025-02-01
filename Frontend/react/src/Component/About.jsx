@@ -188,71 +188,89 @@ const Nav = () => {
 </div>
 
 <div className="container flex justify-evenly items-center mt-12 flex-col md:flex-row mx-auto p-6 md:p-10 rounded-[50px] mb-12 md:mb-24">
-  <div ref={textRef} className="mb-5 md:mb-0 border border-white bg-black p-10 md:p-16 rounded-3xl mt-5 md:mt-0">
-    <h1 ref={h1Ref} className="text-7xl text-white mb-2"></h1>
-    <p className="text-2xl text-white">Education Matters and Important to Everyone</p>
-  </div>
   <div className="mb-5 md:mb-0">
     <img
       ref={imageref}
       src={vadivel}
-      className="h-[490px] md:w-[470px] w-[420px] mt-5 rounded-3xl"
+      className="h-[490px] md:w-[470px] w-[500px] mt-5 rounded-3xl"
       alt="David Shalom"
     />
   </div>
 </div>
 
-<div className="flex flex-col md:flex-row mt-12 mb-20 justify-between border border-black p-6 md:p-10 mx-4 md:mx-auto rounded-xl shadow-lg max-w-7xl" ref={imagerefCard1}>
-  {/* Image Section */}
-  <div className="flex justify-center mb-6 md:mb-0">
-    <img src={learm} className="h-[300px] md:h-[440px] w-auto mx-auto rounded-lg " alt="Learn" />
-  </div>
+<div className="flex flex-col lg:flex-row md:flex-col space-y-5 lg:space-x-5 md:space-y-5 justify-center mt-5 mb-20 px-3">
+        <div
+          className="shadow-lg shadow-black p-7 md:p-20 rounded-[90px] bg-black"
+          ref={imagerefCard1}
+        >
+          <img src={learn} className="h-[180px] md:h-[200px] lg:h-[200px] lg:w-[330px] md:w-[200px] mx-auto" alt="Learn" />
+          <h1 className="text-center mt-10 text-xl md:text-3xl text-white">Easy to Learn</h1>
+        </div>
+        <div
+          className="shadow-lg shadow-black p-7 md:p-20 rounded-[90px] bg-black"
+          ref={imagerefCard1}
+        >
+          <img src={anytime} className="h-[180px] md:h-[200px] lg:h-[220px] lg:w-[350px] md:w-[200px] mx-auto" alt="Learn" />
+          <h1 className="text-center mt-10 text-xl md:text-3xl text-white">Easy to Learn</h1>
+        </div>
+        <div
+          className="shadow-lg shadow-black p-7 md:p-20 rounded-[90px] bg-black"
+          ref={imagerefCard1}
+        >
+          <img src={available} className="h-[180px] md:h-[200px] lg:h-[220px] lg:w-[350px] md:w-[200px] mx-auto" alt="Learn" />
+          <h1 className="text-center mt-10 text-xl md:text-3xl text-white">Easy to Learn</h1>
+        </div>
+        
+        
+        
+      </div>
 
-  {/* Text Section */}
-  <div className="flex flex-col justify-center md:w-[50%] bg-black p-10 ">
-    <h2 className="text-2xl md:text-3xl font-bold text-white text-center md:text-left mb-4">
-      Learn What Matters
-    </h2>
-    <p className='text-base md:text-lg text-white leading-relaxed'>
-      Education is not just about acquiring knowledge; it is about learning what truly matters in life. Whether you're exploring new skills or diving deeper into your passions, the journey of learning shapes the future. Focus on what excites you, what sparks curiosity, and what has the power to impact your life and the world around you. With the right tools and mindset, anything is possible. Start learning today and discover the true power of education.
-    </p>
-  </div>
 
-</div>
+      <div className='flex flex-col mx-auto md:flex-col lg:flex-row lg:space-x-2 mt-20 mb-10 justify-between md:border lg:border md:border-black lg:border-black px-3 md:p-10 lg:p-12 mx-4 md:mx-auto rounded-xl shadow-lg'>
+        {/* Image Section */}
+        <div className='flex justify-center mb-6 md:mb-0'>
+          <img src={learm} className="h-[300px] md:h-[440px] w-auto mx-auto rounded-lg " alt="Learn" />
+        </div>
 
-<div className="p-6 sm:p-10 w-full sm:w-3/4 md:w-1/2 mx-auto mb-5 rounded-[40px]">
-  <h1 className=" text-center text-lg sm:text-2xl font-bold italic leading-relaxed">
-    Our Works
-  </h1>
-</div>
-<div className="flex flex-col md:flex-row space-x-0 md:space-x-5 justify-center mt-5 mb-20 px-5 md:px-10">
+        {/* Text Section */}
+        <div className='flex flex-col justify-center items-center h-auto w-[108%] md:w-[100%] mt-20 md:w-[80%] lg:w-[50%] mx-auto bg-black p-7 '>
+          <h2 className="text-2xl md:text-3xl font-bold text-white text-center md:text-left mb-4">
+            Learn What Matters
+          </h2>
+          <p className='text-base md:text-lg text-white leading-relaxed'>
+            Education is not just about acquiring knowledge; it is about learning what truly matters in life. Whether you're exploring new skills or diving deeper into your passions, the journey of learning shapes the future. Focus on what excites you, what sparks curiosity, and what has the power to impact your life and the world around you. With the right tools and mindset, anything is possible. Start learning today and discover the true power of education.
+          </p>
+        </div>
 
-  <div
-    className="shadow-lg shadow-black p-10 md:p-24 mb-10 rounded-lg bg-black"
-    ref={imagerefCard1}
-  >
-    <img src={learn} className="h-[200px] md:h-[260px] mx-auto" alt="Learn" />
-  </div>
+      </div>
 
-  <div
-    className="shadow-lg shadow-black p-10 md:p-24 mb-10 rounded-lg"
-    ref={imagerefCard2}
-  >
-    <img
-      src={anytime}
-      className="h-[200px] md:h-[260px] w-[230px] md:w-[340px] mx-auto"
-      alt="Anytime"
-    />
-  </div>
+      <div className='flex flex-col mx-auto md:flex-col lg:flex-row lg:space-x-2 mt-12 mb-10 justify-between md:border lg:border md:border-black lg:border-black p-3 md:p-10 lg:p-12 mx-4 md:mx-auto rounded-xl'>
+        {/* Image Section */}
+        <div className='flex justify-center mb-6 md:mb-0'>
+          <img src={ignite} className="h-[300px] md:h-[440px] w-auto mx-auto rounded-lg " alt="Learn" />
+        </div>
 
-  <div
-    className="shadow-lg shadow-black p-10 md:p-24 mb-10 rounded-lg bg-black"
-    ref={imagerefCard3}
-  >
-    <img src={available} className="h-[200px] md:h-[300px] mx-auto" alt="Available" />
-  </div>
+        {/* Text Section */}
+        <div className='flex flex-col justify-center items-center h-auto w-[108%] mt-20 md:w-[100%] lg:w-[50%] mx-auto bg-black p-6 '>
+          <h2 className="text-2xl md:text-3xl font-bold text-white text-center md:text-left mb-4">
+            Learn What Matters
+          </h2>
+          <p className='text-base md:text-lg text-white leading-relaxed'>
+            Education is not just about acquiring knowledge; it is about learning what truly matters in life. Whether you're exploring new skills or diving deeper into your passions, the journey of learning shapes the future. Focus on what excites you, what sparks curiosity, and what has the power to impact your life and the world around you. With the right tools and mindset, anything is possible. Start learning today and discover the true power of education.
+          </p>
+        </div>
 
-</div>
+      </div>
+
+      <div className="bg-black p-6 sm:p-10 w-[95%] sm:w-3/4 md:w-2/3 mx-auto mb-10 rounded-[40px]">
+        <h1 className="text-white text-center text-lg sm:text-2xl font-bold italic leading-relaxed">
+          "Education is the passport to the future, for tomorrow belongs to those who prepare for it today."
+        </h1>
+      </div>
+
+
+
+
 <div className="bg-black p-6 sm:p-10 w-full sm:w-3/4 md:w-1/2 mx-auto mb-10 rounded-[40px]">
   <h1 className="text-white text-center text-lg sm:text-2xl font-bold italic leading-relaxed">
     Our Students
@@ -285,15 +303,15 @@ const Nav = () => {
   </div>
 </div>
 
-<div className='flex flex-col md:flex-row mt-20 mb-20 justify-between p-6 md:p-10 mx-4 md:mx-auto rounded-xl max-w-7xl' ref={imagerefCard1}>
+<div className='flex flex-col md:flex-col lg:flex-col mt-20 mb-20 justify-between p-6 md:p-10 mx-4 md:mx-auto rounded-xl max-w-7xl' ref={imagerefCard1}>
   {/* Image Section */}
   <div className='flex justify-center items-center mb-6 md:mb-0'>
-    <h1 className='text-7xl'>Let's <br></br> Learn <br></br> Together.....</h1>
+    <h1 className='text-7xl'>Let's Learn Together.....</h1>
   </div>
 
   {/* Text Section */}
-  <div className='flex flex-col justify-center md:w-[50%] bg-black p-10 '>
-    <h2 className="text-2xl md:text-3xl font-bold text-white text-center md:text-left mb-4">
+  <div className='flex flex-col mt-10 justify-center items-center md:w-[90%] w-[120%] lg:w-[100%] bg-black p-10 '>
+    <h2 className="text-2xl md:text-3xl font-bold text-white text-center md:text-left  mb-4">
       Contact Us
     </h2>
     <h1 className='text-2xl text-white mb-2'>Mr.Maths Vaathiyaar</h1>
