@@ -306,7 +306,7 @@ const Nav = () => {
 <div className='flex flex-col md:flex-col lg:flex-col mt-20 mb-20 justify-between p-6 md:p-10 mx-4 md:mx-auto rounded-xl max-w-7xl' ref={imagerefCard1}>
   {/* Image Section */}
   <div className='flex justify-center items-center mb-6 md:mb-0'>
-    <h1 className='text-7xl'>Let's Learn Together.....</h1>
+    <h1 className='text-7xl'>Contact Us..</h1>
   </div>
 
   {/* Text Section */}
