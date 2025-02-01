@@ -278,7 +278,7 @@ const Nav = () => {
         </div>
 
         {/* Text Section */}
-        <div className='flex flex-col justify-center items-center h-auto w-[108%] md:w-[100%] mt-20 md:w-[80%] lg:w-[50%] mx-auto bg-black p-7 '>
+        <div className='flex flex-col justify-center items-center h-auto w-[108%] md:w-[100%] mt-20 md:w-[50%] lg:w-[50%] mx-auto bg-black p-7 '>
           <h2 className="text-2xl md:text-3xl font-bold text-white text-center md:text-left mb-4">
             Learn What Matters
           </h2>
@@ -298,7 +298,7 @@ const Nav = () => {
         {/* Text Section */}
         <div className='flex flex-col justify-center items-center h-auto w-[108%] mt-20 md:w-[100%] lg:w-[50%] mx-auto bg-black p-6 '>
           <h2 className="text-2xl md:text-3xl font-bold text-white text-center md:text-left mb-4">
-            Learn What Matters
+            Learn makes Perfect
           </h2>
           <p className='text-base md:text-lg text-white leading-relaxed'>
             Education is not just about acquiring knowledge; it is about learning what truly matters in life. Whether you're exploring new skills or diving deeper into your passions, the journey of learning shapes the future. Focus on what excites you, what sparks curiosity, and what has the power to impact your life and the world around you. With the right tools and mindset, anything is possible. Start learning today and discover the true power of education.
