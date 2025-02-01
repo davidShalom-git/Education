@@ -54,28 +54,29 @@ const SignIn = () => {
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
       }}
+      className="flex justify-center items-center"
     >
-      <div className="flex flex-col justify-center items-center h-full" style={containerStyle}>
-        <div className="text-center mb-10 p-5 rounded-lg" style={titleStyle}>
-          <h1 className="text-5xl text-white">E-Learning</h1>
-          <h4 className="mt-2 text-xl text-white">(Simplified Way to Learn)</h4>
+      <div className="flex flex-col items-center w-full max-w-md p-6 md:p-10 bg-opacity-20 bg-white backdrop-blur-lg rounded-lg shadow-lg mx-4">
+        <div className="text-center mb-6">
+          <h1 className="text-3xl md:text-5xl text-white font-bold">E-Learning</h1>
+          <h4 className="text-lg md:text-xl text-white mt-2">(Simplified Way to Learn)</h4>
         </div>
-        <div className="flex flex-col items-center px-20 py-36" style={glassStyle}>
-          <h1 className="mb-24 text-5xl text-white">Login In</h1>
-          <form className="flex flex-col" onSubmit={onSubmit}>
+        <div className="w-full" style={glassStyle}>
+          <h1 className="text-center text-2xl md:text-4xl text-white mb-6">Login In</h1>
+          <form className="flex flex-col w-full" onSubmit={onSubmit}>
             <input
               type="email"
               placeholder="Enter the email"
-              className="px-20 py-4 rounded-full mb-5"
+              className="w-full px-4 py-3 rounded-lg mb-4 text-black focus:outline-none"
               onChange={(e) => setEmail(e.target.value)}
             />
             <input
               type="password"
               placeholder="Enter the password"
-              className="px-20 py-4 rounded-full mb-5"
+              className="w-full px-4 py-3 rounded-lg mb-4 text-black focus:outline-none"
               onChange={(e) => setPassword(e.target.value)}
             />
-            <button className="bg-black rounded-full w-40 py-4 text-white hover:bg-gray-800 transition duration-300 ease-in-out mx-auto">
+            <button className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition duration-300 ease-in-out">
               Login
             </button>
           </form>
@@ -85,31 +86,30 @@ const SignIn = () => {
   );
 };
 
-const containerStyle = {
-  padding: '20px',
-};
 
-const glassStyle = {
-  background: 'rgba(255, 255, 255, 0.1)',
-  borderRadius: '16px',
-  boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
-  backdropFilter: 'blur(10px)',
-  WebkitBackdropFilter: 'blur(10px)',
-  border: '1px solid rgba(255, 255, 255, 0.3)',
-  textAlign: 'center',
-  paddingTop: '70px',
-  paddingBottom: '70px',
-  paddingLeft: '20px',
-  paddingRight: '20px',
-  margin: '20px',
-};
 
-const titleStyle = {
-  borderRadius: '25px',
-  padding: '15px 45px',
-  textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
-  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
-  margin: '20px',
-};
+
+const glassStyle = { 
+  
+  background: 'rgba(255, 255, 255, 0.1)', 
+  borderRadius: '16px', 
+  boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)', 
+  backdropFilter: 'blur(5px)',
+   WebkitBackdropFilter: 'blur(5px)', 
+  border: '1px solid rgba(255, 255, 255, 0.3)', 
+  textAlign: 'center', 
+  paddingTop: '70px', 
+  paddingBottom: '70px', 
+  paddingLeft: '20px', 
+  paddingRight: '20px', 
+  margin: '20px', }; 
+
+
+  const titleStyle = { 
+    borderRadius: '25px', 
+    padding: '15px 45px', 
+    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', 
+    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
+     margin: '20px', };
 
 export default SignIn;

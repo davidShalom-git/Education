@@ -54,46 +54,44 @@ const SignUp = () => {
         height: '100vh',
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '10px',
       }}
     >
-      <div className="flex flex-col justify-center items-center h-full" style={containerStyle}>
-        <div className="text-center mb-10 p-5 rounded-lg" style={titleStyle}>
-          <h1 className="text-5xl text-white">E-Learning</h1>
-          <h4 className="mt-2 text-xl text-white">(Simplified Way to Learn)</h4>
+      <div className="flex flex-col items-center w-full max-w-md px-8 py-12" style={glassStyle}>
+        <div className="text-center mb-8 p-4 rounded-lg w-full" style={titleStyle}>
+          <h1 className="text-3xl text-white">E-Learning</h1>
+          <h4 className="mt-2 text-lg text-white">(Simplified Way to Learn)</h4>
         </div>
-        <div className="flex flex-col items-center px-20 py-36" style={glassStyle}>
-          <h1 className="mb-24 text-5xl text-white">Sign Up</h1>
-          <form className="flex flex-col" onSubmit={onSubmit}>
-            <input
-              type="text"
-              placeholder="Enter the name"
-              className="px-20 py-4 rounded-full mb-5"
-              onChange={(e) => SetName(e.target.value)}
-            />
-            <input
-              type="email"
-              placeholder="Enter the email"
-              className="px-20 py-4 rounded-full mb-5"
-              onChange={(e) => SetEmail(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Enter the password"
-              className="px-20 py-4 rounded-full mb-5"
-              onChange={(e) => SetPassword(e.target.value)}
-            />
-            <button className="bg-black rounded-full w-40 py-4 text-white hover:bg-gray-800 transition duration-300 ease-in-out mx-auto">
-              Sign Up
-            </button>
-          </form>
-        </div>
+        <h1 className="mb-8 text-3xl text-white">Sign Up</h1>
+        <form className="flex flex-col w-full" onSubmit={onSubmit}>
+          <input
+            type="text"
+            placeholder="Enter the name"
+            className="px-4 py-3 rounded-2xl mb-4 w-full"
+            onChange={(e) => SetName(e.target.value)}
+          />
+          <input
+            type="email"
+            placeholder="Enter the email"
+            className="px-4 py-3 rounded-2xl mb-4 w-full"
+            onChange={(e) => SetEmail(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Enter the password"
+            className="px-4 py-3 rounded-2xl mb-4 w-full"
+            onChange={(e) => SetPassword(e.target.value)}
+          />
+          <button className="bg-black rounded-full py-3 text-white hover:bg-gray-800 transition duration-300 ease-in-out w-full">
+            Sign Up
+          </button>
+        </form>
       </div>
     </div>
   );
-};
-
-const containerStyle = {
-  padding: '20px',
 };
 
 const glassStyle = {
@@ -104,19 +102,13 @@ const glassStyle = {
   WebkitBackdropFilter: 'blur(10px)',
   border: '1px solid rgba(255, 255, 255, 0.3)',
   textAlign: 'center',
-  paddingTop: '70px',
-  paddingBottom: '70px',
-  paddingLeft: '20px',
-  paddingRight: '20px',
-  margin: '20px',
 };
 
 const titleStyle = {
-  borderRadius: '25px',
-  padding: '15px 45px',
+  borderRadius: '12px',
+  padding: '10px 20px',
   textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
   boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
-  margin: '20px',
 };
 
 export default SignUp;
