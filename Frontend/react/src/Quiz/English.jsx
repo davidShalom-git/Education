@@ -5,7 +5,7 @@ import galaxy from '../assets/galaxy.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaSearch } from 'react-icons/fa';
 
-const English = () => {
+const OOSE1 = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const navRef = useRef(null);
@@ -280,4 +280,4 @@ const English = () => {
   );
 };
 
-export default English;
+export default OOSE1;

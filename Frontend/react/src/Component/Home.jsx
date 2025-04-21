@@ -1,4 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import axios from 'axios';
+import gsap from 'gsap';
+import { TextPlugin, ScrollTrigger } from 'gsap/all';
+import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaArrowRight } from 'react-icons/fa';
+
+// Import assets (keep the same imports)
 import galaxy from '../assets/galaxy.png';
 import Study from '../assets/Study.png';
 import learn from '../assets/learn.png';
@@ -10,29 +18,34 @@ import apj from '../assets/apj.png';
 import ratan from '../assets/rata.png';
 import ignite from '../assets/Ignite.jpg';
 import learm from '../assets/Learm.png';
-import { Link, useNavigate } from 'react-router-dom';
-import { TextPlugin } from 'gsap/TextPlugin';
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
-import gsap from 'gsap';
 import Logout from '../Auth/Logout';
 
-gsap.registerPlugin(TextPlugin);
+// Register GSAP plugins
+gsap.registerPlugin(TextPlugin, ScrollTrigger);
 
 const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const navRef = useRef(null);
-  const imageref = useRef(null);
-  const imagerefCard1 = useRef(null);
-  const imagerefCard2 = useRef(null);
-  const imagerefCard3 = useRef(null);
-  const textRef = useRef(null);
-  const h1Ref = useRef(null);
   const [loading, setLoading] = useState(false);
+  const [activeLink, setActiveLink] = useState('home');
+  
+  // Refs for animations
+  const navRef = useRef(null);
+  const imageRef = useRef(null);
+  const heroTextRef = useRef(null);
+  const h1Ref = useRef(null);
+  const cardsRef = useRef([]);
+  const featuresRef = useRef([]);
+  const quoteRef = useRef(null);
+  const pricingRef = useRef(null);
+  const influencersRef = useRef(null);
 
-  const handlePayment = async () => {
+  const toggleMenu = () => setIsOpen(!isOpen);
+  
+  // Payment handling function
+  const handlePayment = async (price) => {
     setLoading(true);
     try {
-      const amount = 20;  // Amount in INR
+      const amount = price;
       const currency = "INR";
 
       const { data } = await axios.post("http://localhost:5000/create-order", {
@@ -46,24 +59,24 @@ const Nav = () => {
         return;
       }
 
-      // Initialize Razorpay Checkout with the received order details
+      // Initialize Razorpay Checkout
       const options = {
-        key: "rzp_test_TVjSKuv8KsSr9Z",  // Replace with your Razorpay Key ID
-        amount: data.amount,  // Amount in paise
+        key: "rzp_test_TVjSKuv8KsSr9Z",
+        amount: data.amount,
         currency: data.currency,
-        name: "Razorpay Payment",
-        description: "Test payment",
-        order_id: data.orderId,  // Received order ID
+        name: "EduSmart Learning",
+        description: `Premium Plan - ₹${price}`,
+        order_id: data.orderId,
         handler: function (response) {
           alert("Payment successful: " + response.razorpay_payment_id);
         },
         prefill: {
-          name: "John Doe",
-          email: "johndoe@example.com",
+          name: "Student Name",
+          email: "student@example.com",
           contact: "+919876543210",
         },
         theme: {
-          color: "#3399cc",
+          color: "#6366F1",
         },
       };
 
@@ -77,393 +90,601 @@ const Nav = () => {
     }
   };
 
-  const toggleMenu = () => setIsOpen(!isOpen);
-
-  // Responsive animations with GSAP matchMedia
+  // Animations setup with GSAP
   useEffect(() => {
-    const mm = gsap.matchMedia();
-
-    mm.add(
-      {
-        // Define breakpoints for responsive animations
-        isDesktop: "(min-width: 1024px)",
-        isTablet: "(max-width: 1023px)",
-        isMobile: "(max-width: 768px)",
-      },
-      (context) => {
-        const { isDesktop, isTablet, isMobile } = context.conditions;
-
-        // Navigation animation
-        gsap.fromTo(
-          navRef.current,
-          { y: -100, opacity: 0 },
-          { y: 0, opacity: 1, duration: 1, ease: "power2.out" }
-        );
-
-        // Hero section animations
-        const timeline = gsap.timeline();
-        timeline
-          .from(
-            imageref.current,
-            {
-              x: isMobile ? 0 : isTablet ? -100 : -200,
-              opacity: 0,
-              duration: 1.5,
-              ease: "power2.out",
-            },
-            0.5
-          )
-          .from(
-            textRef.current,
-            {
-              y: isMobile ? 50 : 200,
-              opacity: 0,
-              duration: 1.5,
-              ease: "power2.out",
-            },
-            "-=1"
-          )
-          .to(
-            h1Ref.current,
-            {
-              text: "Smart Learning...",
-              duration: 2,
-              ease: "power2.inOut",
-            },
-            "-=1"
-          );
-
-        // Cards animation
-        const cardRefs = [
-          imagerefCard1.current,
-          imagerefCard2.current,
-          imagerefCard3.current,
-        ];
-
-        gsap.from(cardRefs, {
-          y: isMobile ? 100 : 200,
-          opacity: 0,
-          duration: 1,
+    // Main timeline
+    const mainTl = gsap.timeline();
+    
+    // Navbar animation
+    mainTl.fromTo(
+      navRef.current,
+      { y: -100, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }
+    );
+    
+    // Hero section animation
+    mainTl.to(
+      h1Ref.current,
+      { text: "Smart Learning for the Future", duration: 1.2, ease: "power2.inOut" },
+      "-=0.3"
+    );
+    
+    mainTl.fromTo(
+      heroTextRef.current,
+      { y: 50, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" },
+      "-=0.5"
+    );
+    
+    // Setup ScrollTrigger for features cards
+    cardsRef.current.forEach((card, index) => {
+      gsap.fromTo(
+        card,
+        { y: 100, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
           ease: "power2.out",
-          stagger: 0.3,
-        });
-
-        // Return cleanup function for this matchMedia context
-        return () => {
-          timeline.revert();
-        };
+          scrollTrigger: {
+            trigger: card,
+            start: "top bottom-=100",
+            toggleActions: "play none none reverse"
+          },
+          delay: index * 0.2
+        }
+      );
+    });
+    
+    // Setup ScrollTrigger for feature sections
+    featuresRef.current.forEach((feature) => {
+      gsap.fromTo(
+        feature,
+        { y: 100, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: feature,
+            start: "top bottom-=100",
+            toggleActions: "play none none reverse"
+          }
+        }
+      );
+    });
+    
+    // Quote animation
+    gsap.fromTo(
+      quoteRef.current,
+      { scale: 0.9, opacity: 0 },
+      {
+        scale: 1,
+        opacity: 1,
+        duration: 0.8,
+        ease: "back.out(1.7)",
+        scrollTrigger: {
+          trigger: quoteRef.current,
+          start: "top bottom-=100",
+          toggleActions: "play none none reverse"
+        }
+      }
+    );
+    
+    // Pricing animation
+    gsap.fromTo(
+      pricingRef.current,
+      { y: 100, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: pricingRef.current,
+          start: "top bottom-=100",
+          toggleActions: "play none none reverse"
+        }
+      }
+    );
+    
+    // Influencers grid animation
+    gsap.fromTo(
+      influencersRef.current,
+      { y: 100, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: influencersRef.current,
+          start: "top bottom-=100",
+          toggleActions: "play none none reverse"
+        }
       }
     );
 
     return () => {
-      mm.revert(); // Ensure all animations and matchMedia instances are cleaned up
+      // Clean up all animations
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      mainTl.kill();
     };
-  }, []); // Empty dependency array ensures this runs only once on mount
+  }, []);
+
+  // Navigation menu items
+  const navItems = [
+    { name: 'Home', path: '/home', id: 'home' },
+    { name: 'Quiz', path: '/quiz', id: 'quiz' },
+    { name: 'Docs', path: '/docs', id: 'docs' },
+    { name: 'Video', path: '/video', id: 'video' },
+    { name: 'About', path: '/about', id: 'about' }
+  ];
+
+  // Feature cards data
+  const featureCards = [
+    { 
+      image: learn, 
+      title: "Interactive Learning",
+      description: "Engage with content that adapts to your learning style"
+    },
+    { 
+      image: anytime, 
+      title: "Learn Anytime",
+      description: "Access courses 24/7 from any device, anywhere"
+    },
+    { 
+      image: available, 
+      title: "Expert Support",
+      description: "Get help from qualified educators whenever you need it"
+    }
+  ];
+
+  // Pricing plans data
+  const pricingPlans = [
+    {
+      price: 100,
+      features: [
+        { text: "Access to Videos", included: true },
+        { text: "Access to PDF's", included: true },
+        { text: "Access to Courses", included: false },
+        { text: "Download PDF's", included: false },
+        { text: "Download Certificates", included: false }
+      ]
+    },
+    {
+      price: 300,
+      features: [
+        { text: "Access to Videos", included: true },
+        { text: "Access to PDF's", included: true },
+        { text: "Download PDF's", included: true },
+        { text: "Access to Courses", included: false },
+        { text: "Download Certificates", included: false }
+      ]
+    },
+    {
+      price: 500,
+      recommended: true,
+      features: [
+        { text: "Access to Videos", included: true },
+        { text: "Access to PDF's", included: true },
+        { text: "Download PDF's", included: true },
+        { text: "Access to Courses", included: true },
+        { text: "Download Certificates", included: true }
+      ]
+    }
+  ];
+
+  // Animation variants for Framer Motion
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100
+      }
+    }
+  };
 
   return (
     <>
-    <div className="container mx-auto">
-
-    <div
-  className="container flex flex-col md:flex-row justify-between items-center text-white px-6 py-5 rounded-[40px] mx-auto bg-black mt-5"
-  ref={navRef}
->
-  {/* Left Section */}
-  <div className="flex justify-between w-full md:w-auto">
-    <img
-      src={galaxy}
-      alt="Galaxy Icon"
-      className="h-10 w-10 animate-spin"
-    />
-    <button
-      className="md:hidden"
-      onClick={toggleMenu}
-      aria-label="Toggle Menu"
-    >
-      <svg
-        className="w-6 h-6"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          d="M4 6h16M4 12h16m-7 6h7"
-        ></path>
-      </svg>
-    </button>
-  </div>
-
-  {/* Center Section (Links) */}
-  <div
-    className={`flex-1 md:flex ${isOpen ? "block" : "hidden"
-      } md:block justify-center mt-4 md:mt-0`}
-  >
-    <ul className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
-      <li>
-        <Link to="/home" className="text-xl text-white hover:text-gray-400">
-          Home
-        </Link>
-      </li>
-      <li>
-        <Link to="/quiz" className="text-xl text-white hover:text-gray-400">
-          Quiz
-        </Link>
-      </li>
-      <li>
-        <Link to="/docs" className="text-xl text-white hover:text-gray-400">
-          Docs
-        </Link>
-      </li>
-      <li>
-        <Link to="/video" className="text-xl text-white hover:text-gray-400">
-          Video
-        </Link>
-      </li>
-      <li>
-        <Link to="/about" className="text-xl text-white hover:text-gray-400">
-          About
-        </Link>
-      </li>
-    </ul>
-  </div>
-  {/* Right Section (Profile Icon) */}
-  <Logout />
-</div>
-
-
-      <div className="container flex justify-evenly items-center mt-20 flex-row md:flex-row lg:flex-row mx-auto p-5 md:p-10 rounded-[50px] mb-20 md:mb-24">
-        <div ref={textRef} className="mb-5 md:mb-0 border border-white p-3 md:p-16 rounded-3xl mt-5 md:mt-0">
-          <h1 ref={h1Ref} className="md:text-7xl text-6xl text-black font-bold mb-2"></h1>
-          <p className="text-2xl text-black">Education Matters and Important to Everyone</p>
-        </div>
-      </div>
-
-
-      <div className="flex flex-col lg:flex-row md:flex-col space-y-5 lg:space-x-5 md:space-y-5 justify-center mt-5 mb-20 px-3">
-        <div
-          className="shadow-lg shadow-black p-7 md:p-20 rounded-[90px] bg-black"
-          ref={imagerefCard1}
+      <div className="container mx-auto px-4">
+        {/* Navigation Bar */}
+        <motion.nav
+          ref={navRef}
+          className="flex flex-col md:flex-row justify-between items-center text-white px-6 py-5 rounded-2xl mx-auto bg-gradient-to-r from-indigo-900 via-indigo-800 to-purple-900 mt-5 shadow-lg"
+          initial={{ y: -100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
         >
-          <img src={learn} className="h-[180px] md:h-[200px] lg:h-[200px] lg:w-[330px] md:w-[200px] mx-auto" alt="Learn" />
-          <h1 className="text-center mt-10 text-xl md:text-3xl text-white">Easy to Learn</h1>
-        </div>
-        <div
-          className="shadow-lg shadow-black p-7 md:p-20 rounded-[90px] bg-black"
-          ref={imagerefCard1}
-        >
-          <img src={anytime} className="h-[180px] md:h-[200px] lg:h-[220px] lg:w-[350px] md:w-[200px] mx-auto" alt="Learn" />
-          <h1 className="text-center mt-10 text-xl md:text-3xl text-white">Easy to Learn</h1>
-        </div>
-        <div
-          className="shadow-lg shadow-black p-7 md:p-20 rounded-[90px] bg-black"
-          ref={imagerefCard1}
-        >
-          <img src={available} className="h-[180px] md:h-[200px] lg:h-[220px] lg:w-[350px] md:w-[200px] mx-auto" alt="Learn" />
-          <h1 className="text-center mt-10 text-xl md:text-3xl text-white">Easy to Learn</h1>
-        </div>
-        
-        
-        
-      </div>
-
-
-      <div className='flex flex-col mx-auto md:flex-col lg:flex-row lg:space-x-2 mt-20 mb-10 justify-between md:border lg:border md:border-black lg:border-black px-3 md:p-10 lg:p-12 mx-4 md:mx-auto rounded-xl shadow-lg'>
-        {/* Image Section */}
-        <div className='flex justify-center mb-6 md:mb-0'>
-          <img src={learm} className="h-[300px] md:h-[440px] w-auto mx-auto rounded-lg " alt="Learn" />
-        </div>
-
-        {/* Text Section */}
-        <div className='flex flex-col justify-center items-center h-auto w-[108%] md:w-[100%] mt-20 lg:w-[50%] mx-auto bg-black p-7 '>
-          <h2 className="text-2xl md:text-3xl font-bold text-white text-center md:text-left mb-4">
-            Learn What Matters
-          </h2>
-          <p className='text-base md:text-lg text-white leading-relaxed'>
-            Education is not just about acquiring knowledge; it is about learning what truly matters in life. Whether you're exploring new skills or diving deeper into your passions, the journey of learning shapes the future. Focus on what excites you, what sparks curiosity, and what has the power to impact your life and the world around you. With the right tools and mindset, anything is possible. Start learning today and discover the true power of education.
-          </p>
-        </div>
-
-      </div>
-
-      <div className='flex flex-col mx-auto md:flex-col lg:flex-row lg:space-x-2 mt-12 mb-10 justify-between md:border lg:border md:border-black lg:border-black p-3 md:p-10 lg:p-12 mx-4 md:mx-auto rounded-xl'>
-        {/* Image Section */}
-        <div className='flex justify-center mb-6 md:mb-0'>
-          <img src={ignite} className="h-[300px] md:h-[440px] w-auto mx-auto rounded-lg " alt="Learn" />
-        </div>
-
-        {/* Text Section */}
-        <div className='flex flex-col justify-center items-center h-auto w-[108%] mt-20 md:w-[100%] lg:w-[50%] mx-auto bg-black p-6 '>
-          <h2 className="text-2xl md:text-3xl font-bold text-white text-center md:text-left mb-4">
-            Learn makes Perfect
-          </h2>
-          <p className='text-base md:text-lg text-white leading-relaxed'>
-            Education is not just about acquiring knowledge; it is about learning what truly matters in life. Whether you're exploring new skills or diving deeper into your passions, the journey of learning shapes the future. Focus on what excites you, what sparks curiosity, and what has the power to impact your life and the world around you. With the right tools and mindset, anything is possible. Start learning today and discover the true power of education.
-          </p>
-        </div>
-
-      </div>
-
-      <div className="bg-black p-6 sm:p-10 w-[95%] sm:w-3/4 md:w-2/3 mx-auto mb-10 rounded-[40px]">
-        <h1 className="text-white text-center text-lg sm:text-2xl font-bold italic leading-relaxed">
-          "Education is the passport to the future, for tomorrow belongs to those who prepare for it today."
-        </h1>
-      </div>
-
-
-      <div className="container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-2 mx-auto mt-10">
-        <div className="text-white p-8 sm:p-10 md:p-12 flex justify-center items-center bg-black rounded-[40px] mx-auto">
-          <img src={Tesla} className="h-[150px] sm:h-[180px] md:h-[300px] w-[150px] sm:w-[180px] md:w-[220px] mx-auto" alt="React" />
-        </div>
-
-
-        <div className="text-white p-8 sm:p-10 md:p-12 flex justify-center items-center bg-black rounded-[40px] mx-auto">
-          <img src={apj} className="h-[150px] sm:h-[180px] md:h-[300px] w-[150px] sm:w-[180px] md:w-[240px] mx-auto" alt="HTML" />
-        </div>
-
-        <div className="text-white p-8 sm:p-10 md:p-12 flex justify-center items-center bg-black rounded-[40px] mx-auto">
-          <img src={Elon} className="h-[150px] sm:h-[180px] md:h-[340px] w-[150px] sm:w-[180px] md:w-[250px] mx-auto" alt="Node.js" />
-        </div>
-
-        <div className="text-white p-8 sm:p-10 md:p-12 flex justify-center items-center bg-black rounded-[40px]  mx-auto">
-          <img src={ratan} className="h-[150px] sm:h-[180px] md:h-[300px] w-[150px] sm:w-[180px] md:w-[270px] mx-auto" alt="Express.js" />
-        </div>
-      </div>
-
-      <div className="bg-black p-6 w-[95%] sm:p-10 w-full sm:w-3/4 md:w-2/3 mx-auto mb-10 mt-36 rounded-[40px]">
-        <h1 className="text-white text-center text-lg sm:text-2xl font-bold italic leading-relaxed">
-          "World is Changing, Everytime we loose, We damgage our self, No more Waiting, Let's Rock."
-        </h1>
-      </div>
-    </div>
-
-    <div className="bg-black p-6 w-[95%] sm:p-10 w-full sm:w-3/4 md:w-1/2 mx-auto mb-10 rounded-[40px]">
-  <h1 className="text-white text-center text-lg sm:text-2xl font-bold italic leading-relaxed">
-    Our Services
-  </h1>
-</div>
-
-<div className="flex flex-col md:flex-row space-x-0 md:space-x-5 justify-center mt-10 mb-20 px-5 md:px-10">
-
-  <div
-    className="shadow-md p-10 md:p-16 mb-10 rounded-lg bg-black hover:bg-gray-800 transition-all duration-300 ease-in-out transform"
-    ref={imagerefCard1}
-  >
-    <h1 className='text-white text-center text-5xl font-bold'>&#8377; 100</h1>
-    <ul className='text-white text-center mt-8 space-y-4'>
-      <li className='text-lg'>1. Access to Videos</li>
-      <li className='text-lg'>2. Access to PDF's</li>
-      <li className='text-lg line-through text-gray-500'>3. Access to Courses</li>
-      <li className='text-lg line-through text-gray-500'>4. Download PDF's</li>
-      <li className='text-lg line-through text-gray-500'>5. Download Certificates</li>
-    </ul>
-    <div className="flex justify-center mt-10">
-      <button className='bg-transparent border-2 border-white p-3 rounded-lg text-white text-xl hover:bg-white hover:text-black transition-all duration-300'>
-        Buy Now
-      </button>
-    </div>
-  </div>
-
-  <div
-    className="shadow-md p-10 md:p-16 mb-10 rounded-lg bg-black hover:bg-gray-800 transition-all duration-300 ease-in-out transform"
-    ref={imagerefCard1}
-  >
-    <h1 className='text-white text-center text-5xl font-bold'>&#8377; 300</h1>
-    <ul className='text-white text-center mt-8 space-y-4'>
-      <li className='text-lg'>1. Access to Videos</li>
-      <li className='text-lg'>2. Access to PDF's</li>
-      <li className='text-lg'>3. Download PDF's</li>
-      <li className='text-lg line-through text-gray-500'>4. Access to Courses</li>
-      <li className='text-lg line-through text-gray-500'>5. Download Certificates</li>
-    </ul>
-    <div className="flex justify-center mt-10">
-      <button className='bg-transparent border-2 border-white p-3 rounded-lg text-white text-xl hover:bg-white hover:text-black transition-all duration-300'>
-        Buy Now
-      </button>
-    </div>
-  </div>
-  <div
-    className="shadow-md p-10 md:p-16 mb-10 rounded-lg bg-black hover:bg-gray-800 transition-all duration-300 ease-in-out transform"
-    ref={imagerefCard1}
-  >
-    <h1 className='text-white text-center text-5xl font-bold'>&#8377; 500</h1>
-    <ul className='text-white text-center mt-8 space-y-4'>
-      <li className='text-lg'>1. Access to Videos</li>
-      <li className='text-lg'>2. Access to PDF's</li>
-      <li className='text-lg'>3. Download PDF's</li>
-      <li className='text-lg'>4. Access to Courses</li>
-      <li className='text-lg'>5. Download Certificates</li>
-    </ul>
-    <div className="flex justify-center mt-10">
-      <button className='bg-transparent border-2 border-white p-3 rounded-lg text-white text-xl hover:bg-white hover:text-black transition-all duration-300'>
-        <Link to='/docs'>Buy Now</Link>
-      </button>
-    </div>
-  </div>
-</div>
-
-      <footer className="bg-black text-white py-10">
-        <div className="container mx-auto flex flex-col lg:flex-row justify-between items-center px-4">
-          {/* Left Section - Social Media Links */}
-          <div className="flex space-x-6 mb-6 lg:mb-0">
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
-              <FaFacebook className="text-3xl hover:text-blue-500 transition duration-300" />
-            </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-              <FaTwitter className="text-3xl hover:text-blue-400 transition duration-300" />
-            </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-              <FaInstagram className="text-3xl hover:text-pink-500 transition duration-300" />
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
-              <FaLinkedin className="text-3xl hover:text-blue-700 transition duration-300" />
-            </a>
-          </div>
-
-          {/* Center Section - Quick Links */}
-          <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-10 mb-6 lg:mb-0">
-            <div className="flex flex-col items-center lg:items-start">
-              <h2 className="text-xl font-bold mb-3">Quick Links</h2>
-              <ul className="space-y-2 text-lg">
-                <li>
-                  <Link to="/home" className="hover:text-gray-400 transition duration-300">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/quiz" className="hover:text-gray-400 transition duration-300">
-                    Quiz
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/docs" className="hover:text-gray-400 transition duration-300">
-                    Docs
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/video" className="hover:text-gray-400 transition duration-300">
-                    Video
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/about" className="hover:text-gray-400 transition duration-300">
-                    About
-                  </Link>
-                </li>
-              </ul>
+          {/* Logo Section */}
+          <div className="flex justify-between w-full md:w-auto">
+            <div className="flex items-center space-x-2">
+              <motion.img
+                src={galaxy}
+                alt="EduSmart Logo"
+                className="h-10 w-10"
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
+              />
+              <span className="text-xl font-bold">EduSmart</span>
             </div>
+            
+            <button
+              className="md:hidden"
+              onClick={toggleMenu}
+              aria-label="Toggle Menu"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+                ></path>
+              </svg>
+            </button>
           </div>
 
-          {/* Right Section - Copyright */}
-          <div className="text-center text-sm mt-6 lg:mt-0">
-            <p>&copy; {new Date().getFullYear()} Your Company. All rights reserved.</p>
+          {/* Navigation Links */}
+          <motion.div
+            className={`flex-1 md:flex ${isOpen ? "block" : "hidden"} md:block justify-center mt-4 md:mt-0`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isOpen ? 1 : [null, 1] }}
+            transition={{ duration: 0.3 }}
+          >
+            <ul className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8">
+              {navItems.map((item) => (
+                <li key={item.id}>
+                  <Link 
+                    to={item.path} 
+                    className={`text-lg font-medium transition-all duration-300 hover:text-indigo-300 ${activeLink === item.id ? 'text-indigo-300 border-b-2 border-indigo-300' : 'text-white'}`}
+                    onClick={() => setActiveLink(item.id)}
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+          
+          {/* Profile Section */}
+          <Logout />
+        </motion.nav>
+
+        {/* Hero Section */}
+        <motion.div 
+          className="flex flex-col items-center justify-center mt-20 mb-28 px-4"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <div ref={heroTextRef} className="text-center max-w-4xl">
+            <h1 ref={h1Ref} className="text-5xl md:text-7xl text-indigo-900 font-bold mb-6"></h1>
+            <p className="text-xl md:text-2xl text-gray-700 mb-8">Education that empowers your future and transforms your potential</p>
+            <motion.button
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-full shadow-lg flex items-center space-x-2 mx-auto"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <span>Start Learning</span>
+              <FaArrowRight />
+            </motion.button>
+          </div>
+        </motion.div>
+
+        {/* Feature Cards */}
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24 px-4"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {featureCards.map((card, index) => (
+            <motion.div
+              key={index}
+              className="bg-gradient-to-br from-indigo-900 to-purple-900 rounded-3xl p-8 shadow-xl text-white flex flex-col items-center transform transition-all duration-300 hover:scale-105"
+              ref={el => cardsRef.current[index] = el}
+              variants={itemVariants}
+            >
+              <div className="bg-white/10 p-4 rounded-full mb-6">
+                <img src={card.image} className="h-32 w-32" alt={card.title} />
+              </div>
+              <h2 className="text-2xl font-bold mb-4 text-center">{card.title}</h2>
+              <p className="text-center text-indigo-100">{card.description}</p>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Feature Section 1 */}
+        <motion.div 
+          className="flex flex-col lg:flex-row items-center gap-12 mb-24 px-4"
+          ref={el => featuresRef.current[0] = el}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="lg:w-1/2">
+            <img 
+              src={learm} 
+              className="rounded-2xl shadow-2xl w-full max-h-[500px] object-cover" 
+              alt="Student learning" 
+            />
+          </div>
+          
+          <div className="lg:w-1/2 bg-gradient-to-br from-indigo-900 to-purple-900 p-8 rounded-2xl text-white shadow-xl">
+            <h2 className="text-3xl font-bold mb-6">Learn What Matters</h2>
+            <p className="text-lg leading-relaxed">
+              Education is not just about acquiring knowledge; it is about learning what truly matters in life. 
+              Whether you're exploring new skills or diving deeper into your passions, the journey of learning shapes the future. 
+              Focus on what excites you, what sparks curiosity, and what has the power to impact your life and the world around you. 
+              With the right tools and mindset, anything is possible. Start learning today and discover the true power of education.
+            </p>
+            <motion.button 
+              className="mt-8 bg-white text-indigo-900 font-bold py-3 px-6 rounded-full hover:bg-indigo-100 transition-all duration-300 flex items-center space-x-2"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <span>Explore Courses</span>
+              <FaArrowRight />
+            </motion.button>
+          </div>
+        </motion.div>
+
+        {/* Feature Section 2 */}
+        <motion.div 
+          className="flex flex-col lg:flex-row-reverse items-center gap-12 mb-24 px-4"
+          ref={el => featuresRef.current[1] = el}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="lg:w-1/2">
+            <img 
+              src={ignite} 
+              className="rounded-2xl shadow-2xl w-full max-h-[500px] object-cover" 
+              alt="Ignite learning" 
+            />
+          </div>
+          
+          <div className="lg:w-1/2 bg-gradient-to-br from-purple-900 to-indigo-900 p-8 rounded-2xl text-white shadow-xl">
+            <h2 className="text-3xl font-bold mb-6">Learning Makes Perfect</h2>
+            <p className="text-lg leading-relaxed">
+              Consistent practice and learning creates mastery. Our adaptive learning platform recognizes your strengths and areas for improvement,
+              customizing content to maximize your learning potential. With interactive exercises, real-time feedback, and expert guidance,
+              you'll build confidence and competence in any subject. Challenge yourself, embrace the journey, and discover how
+              continuous learning transforms possibilities into achievements.
+            </p>
+            <motion.button 
+              className="mt-8 bg-white text-purple-900 font-bold py-3 px-6 rounded-full hover:bg-indigo-100 transition-all duration-300 flex items-center space-x-2"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <span>Start Practice</span>
+              <FaArrowRight />
+            </motion.button>
+          </div>
+        </motion.div>
+
+        {/* Quote Section */}
+        <motion.div 
+          ref={quoteRef}
+          className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-purple-900 p-12 sm:p-16 w-full mx-auto mb-24 rounded-2xl shadow-xl text-center"
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <h1 className="text-white text-2xl sm:text-3xl font-bold italic leading-relaxed max-w-4xl mx-auto">
+            "Education is the passport to the future, for tomorrow belongs to those who prepare for it today."
+          </h1>
+          <p className="text-indigo-200 mt-4 text-lg">— Malcolm X</p>
+        </motion.div>
+
+        {/* Influencers Grid */}
+        <motion.div 
+          ref={influencersRef}
+          className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-24 px-4"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          {[Tesla, apj, Elon, ratan].map((image, index) => (
+            <motion.div 
+              key={index}
+              className="bg-gradient-to-br from-indigo-900 to-purple-900 rounded-2xl p-6 flex justify-center items-center shadow-lg hover:shadow-xl transition-all duration-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <img 
+                src={image} 
+                className="h-[200px] w-auto object-contain" 
+                alt={`Influencer ${index + 1}`} 
+              />
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Second Quote */}
+        <motion.div 
+          className="bg-gradient-to-r from-purple-900 via-indigo-800 to-indigo-900 p-12 sm:p-16 w-full mx-auto mb-24 rounded-2xl shadow-xl text-center"
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <h1 className="text-white text-2xl sm:text-3xl font-bold italic leading-relaxed max-w-4xl mx-auto">
+            "The world is changing. Every time we lose, we damage ourselves. No more waiting, let's rock."
+          </h1>
+          <p className="text-indigo-200 mt-4 text-lg">— EduSmart Motto</p>
+        </motion.div>
+
+        {/* Pricing Section */}
+        <div className="mb-24">
+          <motion.div 
+            className="bg-gradient-to-r from-indigo-900 to-purple-900 p-8 rounded-2xl shadow-xl text-center mb-16 max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <h1 className="text-white text-3xl font-bold">Our Services</h1>
+            <p className="text-indigo-200 mt-4">Choose the plan that fits your learning journey</p>
+          </motion.div>
+
+          <motion.div 
+            ref={pricingRef}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            {pricingPlans.map((plan, index) => (
+              <motion.div
+                key={index}
+                className={`bg-gradient-to-br ${plan.recommended ? 'from-indigo-700 to-purple-700 ring-4 ring-indigo-500' : 'from-indigo-900 to-purple-900'} rounded-2xl p-8 shadow-xl text-white relative transform transition-all duration-300 hover:scale-105`}
+                variants={itemVariants}
+              >
+                {plan.recommended && (
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-1 px-4 rounded-full text-sm shadow-lg">
+                    MOST POPULAR
+                  </div>
+                )}
+                <h1 className="text-center text-4xl font-bold mb-8">₹{plan.price}</h1>
+                <ul className="space-y-4 mb-10">
+                  {plan.features.map((feature, idx) => (
+                    <li key={idx} className={`flex items-center space-x-3 text-lg ${!feature.included && 'text-gray-400'}`}>
+                      <span>{feature.included ? '✓' : '✗'}</span>
+                      <span className={feature.included ? '' : 'line-through'}>{feature.text}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="flex justify-center">
+                  <motion.button
+                    className={`border-2 border-white p-3 rounded-lg text-white text-xl hover:bg-white hover:text-indigo-900 transition-all duration-300 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                    onClick={() => handlePayment(plan.price)}
+                    disabled={loading}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {loading ? 'Processing...' : 'Buy Now'}
+                  </motion.button>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <motion.footer 
+        className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-purple-900 text-white py-16"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+      >
+        <div className="container mx-auto flex flex-col lg:flex-row justify-between items-center px-4">
+          {/* Logo and Description */}
+          <div className="mb-8 lg:mb-0 text-center lg:text-left lg:w-1/3">
+            <div className="flex items-center justify-center lg:justify-start space-x-2 mb-4">
+              <motion.img
+                src={galaxy}
+                alt="EduSmart Logo"
+                className="h-10 w-10"
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
+              />
+              <span className="text-2xl font-bold">EduSmart</span>
+            </div>
+            <p className="text-indigo-200 max-w-sm">
+              Transforming education for the digital age. Learn anywhere, anytime with our premium courses and expert instructors.
+            </p>
+          </div>
+          
+          {/* Quick Links */}
+          <div className="mb-8 lg:mb-0">
+            <h2 className="text-xl font-bold mb-6 text-center lg:text-left">Quick Links</h2>
+            <ul className="space-y-3 text-center lg:text-left">
+              {navItems.map((item) => (
+                <li key={item.id}>
+                  <Link 
+                    to={item.path} 
+                    className="hover:text-indigo-300 transition duration-300"
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+          {/* Social Links */}
+          <div className="text-center lg:text-right">
+            <h2 className="text-xl font-bold mb-6">Connect With Us</h2>
+            <div className="flex space-x-6 justify-center lg:justify-end">
+              <motion.a 
+                href="https://facebook.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.2, color: "#4267B2" }}
+              >
+                <FaFacebook className="text-3xl transition duration-300" />
+              </motion.a>
+              <motion.a 
+                href="https://twitter.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.2, color: "#1DA1F2" }}
+              >
+                <FaTwitter className="text-3xl transition duration-300" />
+              </motion.a>
+              <motion.a 
+                href="https://instagram.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.2, color: "#E1306C" }}
+              >
+                <FaInstagram className="text-3xl transition duration-300" />
+              </motion.a>
+              <motion.a 
+                href="https://linkedin.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.2, color: "#0077B5" }}
+              >
+                <FaLinkedin className="text-3xl transition duration-300" />
+              </motion.a>
+            </div>
+            <p className="mt-6 text-indigo-200">
+              &copy; {new Date().getFullYear()} EduSmart Learning. All rights reserved.
+            </p>
           </div>
         </div>
-      </footer>
-
+      </motion.footer>
     </>
   );
 };
